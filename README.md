@@ -710,12 +710,83 @@ Volt 视图最终会被编译成纯PHP代码
 https://docs.phalconphp.com/zh/latest/reference/tags.html
 
 
+## 模型
+
+### 数据库操作方法
+
+- 添加:  直接设置传递过来的值即可 或可以使用save()方法
+- 更新:  save()
+- 删除:  delete()
+- 查找:  find() findFirst()
+- 保存:  save() 
 
 
 
+## 其它
+
+### URL重定向
+
+重定向用来在当前的处理中跳转到其它的处理流：
+    
+    <?php
+	// 此路由重定向到其它的路由
+	$app->post('/old/welcome', function () use ($app) {
+		$app->response->redirect("new/welcome")->sendHeaders();
+	});
+
+	$app->post('/new/welcome', function () use ($app) {
+		echo 'This is the new Welcome';
+	});
+
+有以下跳转方式：
+
+	//设置一个内部跳转
+	$this->response->redirect( 'posts/index' );
+	// 外部跳转url
+	$this->response->redirect( 'http://www.admpub.com/blog', true );
+	// 设置跳转 http状态
+	$this->resopnse->redirect( 'http://www.admpub.com/blog' , true , 301 );
+
+重定向不会禁用视图组件。因此，如果你想从一个controller/action重定向到另一个controller/acton上，视图将正常显示。当然，你也可以使用 $this->view->disable() 禁用视图输出。
+
+### 存储/获取 Session数据
+
+	$this->session->set("session_name", "session_value");
+	$this->session->has("session-name");
+	$this->session->get("session-name");
+	$this->session->remove("session-name");
+	$this->session->destroy();
+
+### From 表单接收
+
+	//获取$_POST['name'],第二个参数是过滤器，还可以传递第三个参数作为默认值,第四个参数为是否允许为空
+    $name= $this->request->getPost("name", "string");
+
+	//获取$_GET['email']
+    $email=$this->request->getQuery("email", "email");
+
+	//获取$_REQUEST['email']
+    $email=$this->request->get("email", "email");
+
+request的更多方法请参考phalcon源代码：`phalcon/http/request.zep`
 
 
+从容器中获取的服务的最简单方式就是只用get方法，它将从容器中返回一个新的实例：
 
+	<?php $request = $di->get( 'request' ); ?>
 
+或者通过下面这种魔术方法的形式调用：
 
-#出关
+	<?php $request = $di->getRequest(); ?>
+
+### 处理Not-Found
+
+当用户访问未定义的路由时， 微应用会试着执行 "Not-Found"处理器。
+
+	<?php
+	$app->notFound(function () use ($app) {
+    	$app->response->setStatusCode(404, "Not Found")->sendHeaders();
+    	echo 'This is crazy, but this page was not found!';
+	});
+
+#End
