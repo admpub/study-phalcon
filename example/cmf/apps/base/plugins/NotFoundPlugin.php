@@ -1,5 +1,5 @@
 <?php
-namespace CMF\Plugins;
+namespace CMF\Base\Plugins;
 use Phalcon\Events\Event;
 use Phalcon\Mvc\User\Plugin;
 use Phalcon\Dispatcher;
@@ -26,18 +26,19 @@ class NotFoundPlugin extends Plugin
 			switch ($exception->getCode()) {
 				case Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
 				case Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+					#$dispatcher->setDefaultNamespace('CMF\Base\Controllers');
 					$dispatcher->forward(array(
 						'namespace' => 'CMF\Base\Controllers',
-						'controller' => 'errors',
+						'controller' => 'index',
 						'action' => 'show404'
-					));
+					));#\CMF::dump($dispatcher->getHandlerClass(),1);
 					return false;
 			}
 		}
 
 		$dispatcher->forward(array(
 			'namespace' => 'CMF\Base\Controllers',
-			'controller' => 'errors',
+			'controller' => 'index',
 			'action'     => 'show500'
 		));
 		return false;

@@ -1,5 +1,5 @@
 <?php
-namespace CMF\Plugins;
+namespace CMF\Base\Plugins;
 use Phalcon\Acl;
 use Phalcon\Acl\Role;
 use Phalcon\Acl\Resource;

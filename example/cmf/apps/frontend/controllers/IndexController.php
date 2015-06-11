@@ -1,5 +1,5 @@
 <?php
-namespace CMF\Backend\Controllers;
+namespace CMF\Frontend\Controllers;
 /**
 * description
 *
@@ -8,7 +8,7 @@ namespace CMF\Backend\Controllers;
 * @update:2015/6/10
 */
 
-class IndexController extends ControllerBackend{
+class IndexController extends ControllerFrontend{
 	public function indexAction(){
 		echo '<h1>hello.</h1>';exit;
 	}

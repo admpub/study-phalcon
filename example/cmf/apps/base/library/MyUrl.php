@@ -1,5 +1,5 @@
 <?php
-namespace CMF\Library;
+namespace CMF\Base\Library;
 
 use Phalcon\Mvc\Url as UrlProvider;
 /**

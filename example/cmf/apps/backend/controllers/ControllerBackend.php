@@ -1,5 +1,7 @@
 <?php
 namespace CMF\Backend\Controllers;
+use Phalcon\Mvc\Controller;
+use CMF\Base\Controllers\ControllerBase;
 /**
 * description
 *
@@ -8,8 +10,6 @@ namespace CMF\Backend\Controllers;
 * @update:2015/6/10
 */
 
-class IndexController extends ControllerBackend{
-	public function indexAction(){
-		echo '<h1>hello.</h1>';exit;
-	}
+class ControllerBackend extends ControllerBase{
+
 }

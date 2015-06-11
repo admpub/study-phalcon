@@ -17,15 +17,16 @@ CMF :: $view -> registerEngines(array('.volt' => 'volt'));
 
 CMF :: $loader = new Loader();
 CMF :: $loader -> registerNamespaces(array(
-	'\CMF\Plugins' => APPS_PATH . 'base/plugins/',
-	'\CMF\Library' => APPS_PATH . 'base/library/',
-	'\CMF\Base\Controllers' => APPS_PATH . 'base/controllers/',
+	'CMF\Base\Plugins' => APPS_PATH . 'base/plugins/',
+	'CMF\Base\Library' => APPS_PATH . 'base/library/',
+	'CMF\Base\Controllers' => APPS_PATH . 'base/controllers/',
+	'CMF\Base\Models' => APPS_PATH . 'base/models/',
 ),true);
 $eventsManager = new EventsManager();
 include(APPS_PATH.'base/plugins/NotFoundPlugin.php');
 include(APPS_PATH.'base/plugins/SecurityPlugin.php');
-#$eventsManager -> attach('dispatch:beforeDispatch', new \CMF\Plugins\SecurityPlugin);
-$eventsManager -> attach('dispatch:beforeException', new \CMF\Plugins\NotFoundPlugin);
+#$eventsManager -> attach('dispatch:beforeDispatch', new \CMF\Base\Plugins\SecurityPlugin);
+$eventsManager -> attach('dispatch:beforeException', new \CMF\Base\Plugins\NotFoundPlugin);
 CMF :: $dispatcher = new Dispatcher();
 CMF :: $dispatcher -> setEventsManager($eventsManager);
 
@@ -33,7 +34,7 @@ CMF :: $di = new FactoryDefault();
 // 自定义路由
 CMF :: $di -> set('router', function () {
 		$router = new Router();
-		$router -> setDefaultModule('base');
+		$router -> setDefaultModule(CMF::$config->system->defaultModule);
 		$router -> add('/errors/:action', array(
 			'module' => 'base',
 			'controller' => 'errors',
@@ -60,8 +61,8 @@ CMF :: $di -> set('router', function () {
 
 
 CMF :: $di -> set('url', function() {
-		$url = new \CMF\Library\MyUrl();
-		\CMF\Library\MyUrl :: $hasDynamicUrl = strpos(CMF :: $config -> system -> baseUri, '?') !== false;
+		$url = new \CMF\Base\Library\MyUrl();
+		\CMF\Base\Library\MyUrl :: $hasDynamicUrl = strpos(CMF :: $config -> system -> baseUri, '?') !== false;
 		$url -> setBaseUri(CMF :: $config -> system -> baseUri);
 		$url -> setStaticBaseUri(CMF :: $config -> system -> staticBaseUri);
 		return $url;

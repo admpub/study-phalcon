@@ -29,4 +29,26 @@ class ControllerBase extends Controller{
     		)
     	);
     }
+	public function loadModuleScript($module){
+		if(!class_exists('\CMF\\'.ucfirst($module).'\Module') && file_exists(APPS_PATH . $module . '/Module.php')){
+			include(APPS_PATH . $module . '/Module.php');
+		}
+	}
+    public function show404Action(){
+		$this->loadModuleScript('base');
+		$this->view->setViewsDir(\CMF\Base\Module::getModulePath().'views/');
+		$this->view->pick('errors/show404');
+    }
+
+    public function show401Action(){
+		$this->loadModuleScript('base');
+		$this->view->setViewsDir(\CMF\Base\Module::getModulePath().'views/');
+		$this->view->pick('errors/show401');
+    }
+
+    public function show500Action(){
+		$this->loadModuleScript('base');
+		$this->view->setViewsDir(\CMF\Base\Module::getModulePath().'views/');
+		$this->view->pick('errors/show500');
+    }
 }
