@@ -10,6 +10,7 @@ namespace CMF\Frontend\Controllers;
 
 class IndexController extends ControllerFrontend{
 	public function indexAction(){
+		$this->showRunnerInfo();
 		echo '<h1>hello.</h1>';exit;
 	}
 }

@@ -51,4 +51,13 @@ class ControllerBase extends Controller{
 		$this->view->setViewsDir(\CMF\Base\Module::getModulePath().'views/');
 		$this->view->pick('errors/show500');
     }
+
+	public function showRunnerInfo(){
+		\CMF::dump(array(
+			'Namespace'=>$this->dispatcher->getNamespaceName(),
+			'Module'=>$this->dispatcher->getModuleName(),
+			'Controller'=>$this->dispatcher->getControllerName(),
+			'Action'=>$this->dispatcher->getActionName()
+		));
+	}
 }

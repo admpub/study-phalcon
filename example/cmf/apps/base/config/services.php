@@ -35,26 +35,32 @@ CMF :: $di = new FactoryDefault();
 CMF :: $di -> set('router', function () {
 		$router = new Router();
 		$router -> setDefaultModule(CMF::$config->system->defaultModule);
-		$router -> add('/errors/:action', array(
-			'module' => 'base',
-			'controller' => 'errors',
-			'action' => 1,
-		));
-		$router -> add('/login', array(
-			'module' => 'frontend',
-			'controller' => 'login',
-			'action' => 'index',
-		));
-		$router -> add('/admin/errors/:action', array(
-			'module' => 'base',
-			'controller' => 'errors',
-			'action' => 1,
-		));
-		$router -> add('/admin/:controller/:action', array(
-			'module' => 'backend',
-			'controller' => 1,
-			'action' => 2,
-		));
+
+		if(CMF::$config->route){
+			foreach(CMF::$config->route as $k=>$v){
+				$vo=str_replace("'",'"',$v);
+				$v=json_decode($vo,true);
+				if(is_null($v)){//json_decode解析失败
+					$vo=ltrim($vo,'{');
+					$vo=rtrim($vo,'}');
+					$vs=explode(',',$vo);
+					if(!$vs)continue;
+					$v=array();
+					foreach($vs as $v2){
+						$s=explode(':',trim($v2));
+						if(!isset($s[1]))continue;
+						$s[0]=trim($s[0],'"');
+						$s[1]=trim($s[1],'"');
+						if(empty($s[0])||empty($s[1]))continue;
+						if(is_numeric($s[1]))$s[1]=intval($s[1]);
+						$v[$s[0]]=$s[1];
+					}
+				}
+				#CMF::dump(compact('k','v'));
+				if(!$v)continue;
+				$router -> add($k, $v);
+			}
+		}
 		return $router;
 	}
 );

@@ -20,6 +20,17 @@ use Phalcon\Mvc\Model\Query\BuilderInterface;
 
 class ModelBase extends Model{
 
+	//保存之前要执行的操作
+	public function beforeSave(){
+		//Convert the array into a string
+		//$this->status = join(',', $this->status);
+	}
+
+	//查询之后要执行的操作
+	public function afterFetch(){
+		//Convert the string to an array
+		//$this->status = explode(',', $this->status);
+	}
 
 	/**
 	 * 万能分页函数

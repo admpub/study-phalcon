@@ -180,7 +180,7 @@
 `Phalcon\Mvc\View::registerEngines()`会按照相关模板引擎定义的顺序来执行。如果`Phalcon\Mvc\View`发现视图文件具有相同名称但扩展名不同，它只会使用第一个。
 
 - 在注册`view`服务时全局指定模板引擎：
-
+#
 	<?php  
 	use Phalcon\Mvc\View;  
 	//Setting up the view component  
@@ -414,16 +414,17 @@ Volt 视图最终会被编译成纯PHP代码
 </table>
 
 - 赋值  
-	单个变量赋值： 
-     
+	- 单个变量赋值： 
+
     {% set fruits = ['Apple', 'Banana', 'Orange'] %}  
     {% set name = robot.name %}
 
-	多个变量赋值：  
+
+ 	- 多个变量赋值：  
 
     {% set fruits = ['Apple', 'Banana', 'Orange'], name = robot.name, active = true %}
 
-	支持的字面值：
+	- 支持的字面值：
 <table border="1" class="docutils">
 <colgroup>
 <col width="22%">
@@ -518,7 +519,7 @@ Volt 视图最终会被编译成纯PHP代码
 </table>
 
 - 宏定义：https://docs.phalconphp.com/zh/latest/reference/volt.html#macros
-    
+#
     {%- macro my_input(name, class="input-text") %}  
     {% return text_field(name, 'class': class) %}  
     {%- endmacro %}  
@@ -710,9 +711,141 @@ https://docs.phalconphp.com/zh/latest/reference/models.html
 - 更新:  save()
 - 删除:  delete()
 - 查找:  find() findFirst()
+- 运算:  count() sum() average() maximum() minimum()
 - 保存:  save() 
+#
+	$robots = Robots::find(array(  
+    	"type = 'virtual'",  
+    	"order" => "name",  
+    	"limit" => 100  
+	));  
+	foreach ($robots as $robot) {  
+   		echo $robot->name, "\n";  
+	}  
+	$robots = Robots::find(array(
+    	"conditions" => "type = ?1",
+    	"bind"       => array(1 => "virtual")
+	));
+
+	$robot = Robots::findFirst(array("type = 'virtual'", "order" => "name"));
+	echo "The first virtual robot name is ", $robot->name, "\n";
 
 
+可用的查询选项如下：
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%">
+<col width="70%">
+<col width="26%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">描述</th>
+<th class="head">举例</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>conditions</td>
+<td>查询操作的搜索条件。用于提取只有那些满足指定条件的记录。默认情况下 Phalcon\Mvc\Model 假定第一个参数就是查询条件。</td>
+<td>“conditions” =&gt; “name LIKE ‘steve%’”</td>
+</tr>
+<tr class="row-odd"><td>columns</td>
+<td>只返回指定的字段，而不是模型所有的字段。 当用这个选项时，返回的是一个不完整的对象。</td>
+<td>“columns” =&gt; “id, name”</td>
+</tr>
+<tr class="row-even"><td>bind</td>
+<td>绑定与选项一起使用，通过替换占位符以及转义字段值从而增加安全性。</td>
+<td>“bind” =&gt; array(“status” =&gt; “A”, “type” =&gt; “some-time”)</td>
+</tr>
+<tr class="row-odd"><td>bindTypes</td>
+<td>当绑定参数时，可以使用这个参数为绑定参数定义额外的类型限制从而更加增强安全性。</td>
+<td>“bindTypes” =&gt; array(Column::BIND_TYPE_STR, Column::BIND_TYPE_INT)</td>
+</tr>
+<tr class="row-even"><td>order</td>
+<td>用于结果排序。使用一个或者多个字段，逗号分隔。</td>
+<td>“order” =&gt; “name DESC, status”</td>
+</tr>
+<tr class="row-odd"><td>limit</td>
+<td>限制查询结果的数量在一定范围内。</td>
+<td>“limit” =&gt; 10 / “limit” =&gt; array(“number” =&gt; 10, “offset” =&gt; 5)</td>
+</tr>
+<tr class="row-even"><td>group</td>
+<td>从多条记录中获取数据并且根据一个或多个字段对结果进行分组。</td>
+<td>“group” =&gt; “name, status”</td>
+</tr>
+<tr class="row-odd"><td>for_update</td>
+<td>通过这个选项， <a href="../api/Phalcon_Mvc_Model.html" class="reference internal"><em>Phalcon\Mvc\Model</em></a>  读取最新的可用数据，并且为读到的每条记录设置独占锁。</td>
+<td>“for_update” =&gt; true</td>
+</tr>
+<tr class="row-even"><td>shared_lock</td>
+<td>通过这个选项， <a href="../api/Phalcon_Mvc_Model.html" class="reference internal"><em>Phalcon\Mvc\Model</em></a>  读取最新的可用数据，并且为读到的每条记录设置共享锁。</td>
+<td>“shared_lock” =&gt; true</td>
+</tr>
+<tr class="row-odd"><td>cache</td>
+<td>缓存结果集，减少了连续访问数据库。</td>
+<td>“cache” =&gt; array(“lifetime” =&gt; 3600, “key” =&gt; “my-find-key”)</td>
+</tr>
+<tr class="row-even"><td>hydration</td>
+<td>Sets the hydration strategy to represent each returned record in the result</td>
+<td>“hydration” =&gt; Resultset::HYDRATE_OBJECTS</td>
+</tr>
+</tbody>
+</table>
+
+如果你愿意，除了使用数组作为查询参数外，还可以通过一种面向对象的方式来创建查询：
+
+	<?php
+	$robots = Robots::query()
+    ->where("type = :type:")
+    ->andWhere("year < 2000")
+    ->bind(array("type" => "mechanical"))
+    ->order("name")
+    ->execute();
+
+最后，还有一个 findFirstBy<property-name>() 方法。这个方法扩展了前面提及的 “findFirst()” 方法。它允许您利用方法名中的属性名称，通过将要搜索的该字段的内容作为参数传给它，来快速从一个表执行检索操作。
+
+### 指定数据返回类型
+$findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
+可选的值有：`Resultset::HYDRATE_ARRAYS`、`Resultset::HYDRATE_OBJECTS`、`Resultset::HYDRATE_RECORDS`。
+
+也可以这样指定：
+
+	$robots = Robots::find(array(
+    	'hydration' => Resultset::HYDRATE_ARRAYS
+	));
+
+### 模型关联
+有四种关联类型：1对1,1对多，多对1，多对多。关联可以是单向或者双向的，每个关联可以是简单的（一个1对1的模型）也可以是复杂的（1组模型）。
+
+在Phalcon中,关联必须定义在某个模型的initialize()方法。通过方法belongsTo(),hasOne(),hasMany()和hasManyToMany()来定义当前模型中字段到另一个模型中字段之间的关联。上述每种方法都需要三个参数:本地字段，引用的模型，引用的字段。  
+
+方法的具体含义：
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%">
+<col width="65%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Method</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hasMany</td>
+<td>Defines a 1-n relationship</td>
+</tr>
+<tr class="row-odd"><td>hasOne</td>
+<td>Defines a 1-1 relationship</td>
+</tr>
+<tr class="row-even"><td>belongsTo</td>
+<td>Defines a n-1 relationship</td>
+</tr>
+<tr class="row-odd"><td>hasManyToMany</td>
+<td>Defines a n-n relationship</td>
+</tr>
+</tbody>
+</table>
 
 ## 其它
 
