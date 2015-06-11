@@ -167,7 +167,7 @@
 “Phalcon\Cache\Backend”中包含了对各种后台缓存引擎的操作。
 
 ## 使用模板引擎
-1. 在控制器方法中指定模板引擎：
+- 在控制器方法中指定模板引擎：
 
  		// Using more than one template engine
         $this->view->registerEngines(
@@ -177,10 +177,9 @@
             )
         );
 方法`Phalcon\Mvc\View::registerEngines()`接受一个包含定义模板引擎数据的数组。每个引擎的键名是一个区别于其他引擎的拓展名。模板文件和特定的引擎关联必须有这些扩展名。
-
 `Phalcon\Mvc\View::registerEngines()`会按照相关模板引擎定义的顺序来执行。如果`Phalcon\Mvc\View`发现视图文件具有相同名称但扩展名不同，它只会使用第一个。
 
-2. 在注册`view`服务时全局指定模板引擎：
+- 在注册`view`服务时全局指定模板引擎：
 
 	<?php  
 	use Phalcon\Mvc\View;  
