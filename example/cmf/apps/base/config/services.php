@@ -24,10 +24,12 @@ CMF :: $loader -> registerNamespaces(array(
 	'CMF\Base\Models' => APPS_PATH . 'base/models/',
 ),true);
 $eventsManager = new EventsManager();
-include(APPS_PATH.'base/plugins/NotFoundPlugin.php');
-include(APPS_PATH.'base/plugins/SecurityPlugin.php');
-#$eventsManager -> attach('dispatch:beforeDispatch', new \CMF\Base\Plugins\SecurityPlugin);
-$eventsManager -> attach('dispatch:beforeException', new \CMF\Base\Plugins\NotFoundPlugin);
+if(!CMF::$config->system->debug){
+	include(APPS_PATH.'base/plugins/NotFoundPlugin.php');
+	include(APPS_PATH.'base/plugins/SecurityPlugin.php');
+	#$eventsManager -> attach('dispatch:beforeDispatch', new \CMF\Base\Plugins\SecurityPlugin);
+	$eventsManager -> attach('dispatch:beforeException', new \CMF\Base\Plugins\NotFoundPlugin);
+}
 CMF :: $dispatcher = new Dispatcher();
 CMF :: $dispatcher -> setEventsManager($eventsManager);
 
@@ -83,13 +85,13 @@ CMF :: $di -> set('volt', function($view, $di) {
 	return $volt;
 } , true);
 
-CMF :: $di->set('profiler', function(){
+CMF :: $di -> set('profiler', function(){
 	return new ProfilerDb();
 }, true);
 
 CMF :: $di -> set('db', function() {
 	if(CMF::$config->system->debug){
-		$eventsManager = new ManagerEvent();
+		$eventsManager = new EventsManager();
 		//Get a shared instance of the DbProfiler
 		$profiler      = CMF :: $di->getProfiler();
 		//Listen all the database events
@@ -107,8 +109,10 @@ CMF :: $di -> set('db', function() {
 		'host' => CMF :: $config -> database -> host,
 		'username' => CMF :: $config -> database -> username,
 		'password' => CMF :: $config -> database -> password,
-		'dbname' => CMF :: $config -> database -> name
+		'dbname' => CMF :: $config -> database -> name,
+		'charset' => CMF :: $config -> database -> charset
 	));
+	$connection->query('SET NAMES "'.CMF :: $config -> database -> charset.'"');
 	if(CMF::$config->system->debug){
 		//Assign the eventsManager to the db adapter instance
 		$connection->setEventsManager($eventsManager);

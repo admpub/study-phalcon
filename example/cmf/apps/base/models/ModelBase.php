@@ -22,7 +22,7 @@ class ModelBase extends Model{
 
 	//表前缀
 	public function getSource(){
-		return \CMF::$config->database->prefix.strtolower(get_class($this));
+		return \CMF::$config->database->prefix.strtolower(basename(get_class($this)));
 	}
 
 	//保存之前要执行的操作

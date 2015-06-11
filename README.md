@@ -705,6 +705,9 @@ https://docs.phalconphp.com/zh/latest/reference/tags.html
 
 ## 模型
 https://docs.phalconphp.com/zh/latest/reference/models.html
+模型类的名称使用表名称且首字母大写，继承于`Phalcon\Mvc\Model`。
+文件名称与模型类名称一致。
+
 ### 数据库操作方法
 
 - 添加:  直接设置传递过来的值即可 或可以使用save()方法
@@ -846,6 +849,38 @@ $findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 </tr>
 </tbody>
 </table>
+
+多对多必须关联3个模型，并分别设置它们的关联字段
+
+	<?php
+
+	use Phalcon\Mvc\Model;
+
+	class Robots extends Model
+	{
+    	public $id;
+
+    	public $name;
+
+    	public function initialize()
+   	 	{
+        	$this->hasManyToMany(
+            	"id",						//当前模型中的字段
+            	"RobotsParts",				//关联到的中间表模型
+            	"robots_id", "parts_id",	//分别为当前模型id与中间表相关联的字段和中间表与第三张表关联的字段，这两个字段都在中间表内
+            	"Parts",					//第三张表模型名
+            	"id"						//第三张表中与中间表关联的字段
+        	);
+    	}
+
+	}
+
+
+对于使用名称空间的情况下，可以设置别名，或在model类中使用以下方法，但是对于多对多的情况，对于第三张表由于无法设置别名，只能使用以下方法：
+
+	$this->getRelated('Robots\Parts');
+
+## PHQL
 
 ## 其它
 

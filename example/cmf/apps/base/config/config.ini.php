@@ -4,8 +4,9 @@ adapter  = Mysql
 host     = localhost
 username = root
 password = root
-name     = test
-prefix   = swh_
+name     = testcsq
+prefix   = cge_
+charset  = utf8
 
 [module]
 base            = 1
@@ -18,7 +19,7 @@ baseUri        = "/cmf/index.php?_url=/"
 ;静态资源文件网址
 staticBaseUri  = /cmf/
 defaultModule  = frontend
-debug          = 0
+debug          = 1
 
 [route]
 /errors/:action = "{'module':'base','controller':'errors','action':1}"

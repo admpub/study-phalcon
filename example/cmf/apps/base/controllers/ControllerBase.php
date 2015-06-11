@@ -67,15 +67,12 @@ class ControllerBase extends Controller{
 		$content = '';
 		$elapsedTime = 0;
 		if($profiles) foreach ($profiles as $profile) {
-			$content .= 'SQL Statement: '. $profile->getSQLStatement(). "\n";
-			$content .= 'Start Time: '. $profile->getInitialTime(). "\n";
-			$content .= 'Final Time: '. $profile->getFinalTime(). "\n";
-			$content .= 'Elapsed Time: '. $profile->getTotalElapsedSeconds(). "\n";
+			$content .= '<span style="color:#ff0">['.sprintf('%5f',$profile->getTotalElapsedSeconds()).']</span> '. $profile->getSQLStatement(). '<br />';
 			$elapsedTime+=$profile->getTotalElapsedSeconds();
 		}
-		echo '<div style="position:fixed;top:0;right:0;padding:3px 15px;background:#000;color:#FFF;box-shadow:1px 1px 5px #555;" onmouseover="document.getElementById(\'__SqlQueryInfo__\').style.display=\'\';" onmouseout="document.getElementById(\'__SqlQueryInfo__\').style.display=\'none\';">';
-		echo '<pre>Total Queries: ',count($profiles),PHP_EOL,'Total Elapsed: ',$elapsedTime,PHP_EOL,'</pre>';
-		echo '<pre id="__SqlQueryInfo__" style="display:none">eeeee',$content,'</pre>';
+		echo '<div style="position:fixed;top:0;right:0;padding:3px 15px;background:#000;color:#FFF;box-shadow:1px 1px 5px #555;max-width:80%;font-size:13px" onmouseover="document.getElementById(\'__SqlQueryInfo__\').style.display=\'\';" onmouseout="document.getElementById(\'__SqlQueryInfo__\').style.display=\'none\';">';
+		echo '<div>Total Queries: ',count($profiles),' &nbsp; Total Elapsed: ',sprintf('%5f',$elapsedTime),'s</div>';
+		echo '<div id="__SqlQueryInfo__" style="display:none;width:100%;word-wrap:break-word;word-break:normal;word-break:break-all;">',$content,'</div>';
 		echo '</div>';
 	}
 }
