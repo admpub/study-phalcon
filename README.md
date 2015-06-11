@@ -181,25 +181,25 @@
 `Phalcon\Mvc\View::registerEngines()`会按照相关模板引擎定义的顺序来执行。如果`Phalcon\Mvc\View`发现视图文件具有相同名称但扩展名不同，它只会使用第一个。
 
 2. 在注册`view`服务时全局指定模板引擎：
->     
+> 
 >     <?php
->     
+>
 >     use Phalcon\Mvc\View;
->     
+>
 >     //Setting up the view component
 >     $di->set('view', function() {
->     
+>
 >         $view = new View();
->     
+>
 >         //A trailing directory separator is required
 >         $view->setViewsDir('../app/views/');
->     
+>
 >         $view->registerEngines(array(
 >             '.my-html' ='MyTemplateAdapter' //元素值可以是类名、服务名或返回模板引擎对象的匿名函数
 >         ));
->     
+>
 >         return $view;
->     
+>
 >     }, true);
 
 Volt 视图最终会被编译成纯PHP代码
@@ -711,7 +711,7 @@ https://docs.phalconphp.com/zh/latest/reference/tags.html
 
 
 ## 模型
-
+https://docs.phalconphp.com/zh/latest/reference/models.html
 ### 数据库操作方法
 
 - 添加:  直接设置传递过来的值即可 或可以使用save()方法
