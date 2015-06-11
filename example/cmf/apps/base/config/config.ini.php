@@ -1,9 +1,11 @@
+;<?php die;?>
 [database]
 adapter  = Mysql
 host     = localhost
 username = root
 password = root
-name     = invo
+name     = test
+prefix   = swh_
 
 [module]
 base            = 1

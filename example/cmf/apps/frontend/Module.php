@@ -9,7 +9,7 @@ class Module implements ModuleDefinitionInterface{
 	private static $_moduleName='frontend';
 
 	public function getConfig(){
-		if(is_null(self::$_config)) self::$_config = new ConfigIni(self::getModulePath() . 'config/config.ini');
+		if(is_null(self::$_config)) self::$_config = new ConfigIni(self::getModulePath() . 'config/config.ini.php');
 		return self::$_config;
 	}
 
