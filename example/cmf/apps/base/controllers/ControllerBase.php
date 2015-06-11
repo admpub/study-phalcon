@@ -60,4 +60,22 @@ class ControllerBase extends Controller{
 			'Action'=>$this->dispatcher->getActionName()
 		));
 	}
+
+	public function showDbDebug(){
+		//Get the generated profiles from the profiler
+		$profiles = $this->di->get('profiler')->getProfiles();
+		$content = '';
+		$elapsedTime = 0;
+		if($profiles) foreach ($profiles as $profile) {
+			$content .= 'SQL Statement: '. $profile->getSQLStatement(). "\n";
+			$content .= 'Start Time: '. $profile->getInitialTime(). "\n";
+			$content .= 'Final Time: '. $profile->getFinalTime(). "\n";
+			$content .= 'Elapsed Time: '. $profile->getTotalElapsedSeconds(). "\n";
+			$elapsedTime+=$profile->getTotalElapsedSeconds();
+		}
+		echo '<div style="position:fixed;top:0;right:0;padding:3px 15px;background:#000;color:#FFF;box-shadow:1px 1px 5px #555;" onmouseover="document.getElementById(\'__SqlQueryInfo__\').style.display=\'\';" onmouseout="document.getElementById(\'__SqlQueryInfo__\').style.display=\'none\';">';
+		echo '<pre>Total Queries: ',count($profiles),PHP_EOL,'Total Elapsed: ',$elapsedTime,PHP_EOL,'</pre>';
+		echo '<pre id="__SqlQueryInfo__" style="display:none">eeeee',$content,'</pre>';
+		echo '</div>';
+	}
 }

@@ -32,6 +32,19 @@ class ModelBase extends Model{
 		//$this->status = explode(',', $this->status);
 	}
 
+	//开始事务
+	public function begin(){
+		$this->db->begin();
+	}
+
+	//结束事务
+	public function end($isOk=true){
+		if($isOk){
+			$this->db->commit();
+		}else{
+			$this->db->rollback();
+		}
+	}
 	/**
 	 * 万能分页函数
 	 *
