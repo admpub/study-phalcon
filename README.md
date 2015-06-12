@@ -126,7 +126,7 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 
 ### 指定参数名称 ###
 - 方式一，在数组中指定：
-#
+
 
 	<?php
 	$router->add(
@@ -166,7 +166,7 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 
 
 - 方式二，在路由中指定：
-#
+
 
 	$router->add(
 		"/documentation/{chapter}/{name}.{type:[a-z]+}",
@@ -186,7 +186,7 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 - {命名}
 
 指定名称空间的例子：
-#
+
 	$router->add("/login", array(
     	'namespace'  => 'Backend\Controllers',
     	'controller' => 'login',
@@ -210,7 +210,8 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 除了convert方法之外，还支持：
 
 - 匹配回调函数
-#
+
+
 	->beforeMatch(function($uri, $route) {
     	//Check if the request was made with Ajax
     	if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'xmlhttprequest') {
@@ -220,7 +221,8 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')
 
 - 限制主机名
-#
+
+
 	->setHostName('([a-z+]).company.com');
 
 
@@ -439,7 +441,8 @@ Then mount the group in the router:
 `Phalcon\Mvc\View::registerEngines()`会按照相关模板引擎定义的顺序来执行。如果`Phalcon\Mvc\View`发现视图文件具有相同名称但扩展名不同，它只会使用第一个。
 
 - 在注册`view`服务时全局指定模板引擎：
-#
+
+
 	<?php  
 	use Phalcon\Mvc\View;  
 	//Setting up the view component  
@@ -569,12 +572,11 @@ Volt 视图最终会被编译成纯PHP代码
 - for循环用法
 
 基础用法：
-#
 
-     {% for robot in robots %}
+		 {% for robot in robots %}
         	{{ robot.name|e }}
-     {% endfor %}
-#
+		 {% endfor %}
+
 嵌套循环：
 
 	{% for robot in robots %}  
@@ -616,7 +618,7 @@ Volt 视图最终会被编译成纯PHP代码
 
 - if条件判断
 基本用法
-#
+
 
     {% if robot.type == "cyborg" %}
     	  {{ robot.name|e }}
@@ -778,7 +780,8 @@ if中可以使用的内置变量：
 </table>
 
 - 宏定义：https://docs.phalconphp.com/zh/latest/reference/volt.html#macros
-#
+
+
     {%- macro my_input(name, class="input-text") %}  
     {% return text_field(name, 'class': class) %}  
     {%- endmacro %}  
@@ -918,8 +921,8 @@ if中可以使用的内置变量：
 		`{% block title %}默认标题{% endblock %}`
 
   - 子模板  
-#
-  		{% extends "templates/base.volt" %}  
+
+		{% extends "templates/base.volt" %}  
 		{% block title %}重新定义的标题{% endblock %}
 
 父模板中块(block)内的内容会被子模板中的同名块中的内容替换，除非在子模板中不存在该块的定义。  
@@ -927,7 +930,8 @@ if中可以使用的内置变量：
 
 
 - 新增模板函数  
-#
+
+
     <?php
     
     use Phalcon\Mvc\View\Engine\Volt;
@@ -940,14 +944,16 @@ if中可以使用的内置变量：
     $compiler->addFunction('shuffle', 'str_shuffle');//第二个参数可以是函数名或匿名函数
     
 - 新增过滤器
-#
+
+
  	//This creates a filter 'hash' that uses the PHP function 'md5'   
 	$compiler->addFilter('hash', 'md5');//第二个参数可以是函数名或匿名函数
 
 - 编写扩展：https://docs.phalconphp.com/zh/latest/reference/volt.html#extensions
 
 - 缓存视图片段
-#
+
+
 	{% cache ("article-" ~ post.id) 3600 %}
     	<h1>{{ post.title }}</h1>
     	<p>{{ post.content }}</p>
@@ -973,7 +979,8 @@ if中可以使用的内置变量：
 - 查找:  find() findFirst()
 - 运算:  count() sum() average() maximum() minimum()
 - 保存:  save() 
-#
+
+
 	$robots = Robots::find(array(  
     	"type = 'virtual'",  
     	"order" => "name",  
@@ -1140,7 +1147,8 @@ if中可以使用的内置变量：
 在执行操作之前必须要有相应的model文件存在。
 ### 创建 PHQL 查询
 - 方式一、直接通过创建`Phalcon\Mvc\Model\Query`类的实例来查询：
-#
+
+
 	<?php
 	use Phalcon\Mvc\Model\Query;
 
@@ -1151,7 +1159,8 @@ if中可以使用的内置变量：
 	$cars = $query->execute();
 
 - 方式二、在控制器或视图中，通过modelsManager(模型管理器)来查询：
-#
+
+
 	<?php
 	//Executing a simple query
 	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars");
