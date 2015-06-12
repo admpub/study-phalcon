@@ -55,7 +55,7 @@
 > 
 > 替换为：
 > 
-> 	$url = new \MyUrl();
+> 	$url = new \MyUrl();  
 > 	\MyUrl::$hasDynamicUrl=strpos($config->application->baseUri,'?')!==false;
 > 
 > 即可解决。
@@ -128,18 +128,18 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 - 方式一，在数组中指定：
 
 
-	<?php
-	$router->add(
-		"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",
-		array(
-			"controller" => "posts",
-			"action"     => "show",
-			"year"       => 1, // ([0-9]{4})
-			"month"      => 2, // ([0-9]{2})
-			"day"        => 3, // ([0-9]{2})
-			"params"     => 4, // :params
-		)
-	);
+	<?php  
+	$router->add(  
+		"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",  
+		array(  
+			"controller" => "posts",  
+			"action"     => "show",  
+			"year"       => 1, // ([0-9]{4})  
+			"month"      => 2, // ([0-9]{2})  
+			"day"        => 3, // ([0-9]{2})  
+			"params"     => 4, // :params  
+		)  
+	);  
 
 
 在上面的例子中，路由没有定义“controller”和“action”部分，而是被指定为“posts”和“show”，这样，用户将不知道控制器的真实请求路径。
@@ -168,13 +168,13 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 - 方式二，在路由中指定：
 
 
-	$router->add(
-		"/documentation/{chapter}/{name}.{type:[a-z]+}",
-		array(
-			"controller" => "documentation",
-			"action"     => "show"
-		)
-	);
+	$router->add(  
+		"/documentation/{chapter}/{name}.{type:[a-z]+}",  
+		array(  
+			"controller" => "documentation",  
+			"action"     => "show"  
+		)  
+	);  
 
 看见了吗？花括号中的chaper、name和type就是相对应的名称了。
 
@@ -212,13 +212,13 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 - 匹配回调函数
 
 
-	->beforeMatch(function($uri, $route) {
-    	//Check if the request was made with Ajax
-    	if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'xmlhttprequest') {
-        	return false;
-    	}
-    	return true;
-	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')
+	->beforeMatch(function($uri, $route) {  
+    	//Check if the request was made with Ajax  
+    	if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'xmlhttprequest') {  
+        	return false;  
+    	}  
+    	return true;  
+	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')  
 
 - 限制主机名
 
