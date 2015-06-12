@@ -126,9 +126,8 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 
 ### 指定参数名称 ###
 - 方式一，在数组中指定：
-
+#
 	<?php
-
 	$router->add(
     	"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",
     	array(
@@ -219,7 +218,7 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')
 
 - 限制主机名
-
+#
 	->setHostName('([a-z+]).company.com');
 
 
@@ -567,14 +566,14 @@ Volt 视图最终会被编译成纯PHP代码
 
 - for循环用法
 
-	基础用法：
-
+基础用法：
+#
 
      {% for robot in robots %}
         	{{ robot.name|e }}
      {% endfor %}
-
-	嵌套循环：
+#
+嵌套循环：
 
 	{% for robot in robots %}  
   		{% for part in robot.parts %}  
@@ -582,7 +581,7 @@ Volt 视图最终会被编译成纯PHP代码
 		{% endfor %}  
 	{% endfor %}  
 
-	获取索引值
+获取索引值
 
 
     {% set numbers = ['one': 1, 'two': 2, 'three': 3] %}
@@ -591,7 +590,7 @@ Volt 视图最终会被编译成纯PHP代码
       Name: {{ name }} Value: {{ value }}
     {% endfor %}
 
-	用if进行筛选
+用if进行筛选
 
 
     {% for value in numbers if value < 2 %}
@@ -611,11 +610,11 @@ Volt 视图最终会被编译成纯PHP代码
         There are no robots to show
     {% endfor %}
 
-    可以在for结构中使用`{% break %}`和`{% continue %}`来跳出和执行下一次循环
+可以在for结构中使用`{% break %}`和`{% continue %}`来跳出和执行下一次循环
 
 - if条件判断
-	基本用法
-
+基本用法
+#
 
     {% if robot.type == "cyborg" %}
     	  {{ robot.name|e }}
@@ -635,7 +634,7 @@ Volt 视图最终会被编译成纯PHP代码
         Robot is mechanical
     {% endif %}
 
-	if中可以使用的内置变量
+if中可以使用的内置变量：
 <table class="docutils" border="1">
 <colgroup>
 <col width="22%">
@@ -914,19 +913,19 @@ Volt 视图最终会被编译成纯PHP代码
 - 模板的继承
   - 父模板（templates/base.volt）  
 
-		{% block title %}默认标题{% endblock %}
+		`{% block title %}默认标题{% endblock %}`
 
   - 子模板  
-
+#
   		{% extends "templates/base.volt" %}  
 		{% block title %}重新定义的标题{% endblock %}
 
-	父模板中块(block)内的内容会被子模板中的同名块中的内容替换，除非在子模板中不存在该块的定义。  
-	如果想要保留或引用父模板中某block的内容，可以在子模板的同名块中使用`{{ super() }}`
+父模板中块(block)内的内容会被子模板中的同名块中的内容替换，除非在子模板中不存在该块的定义。  
+如果想要保留或引用父模板中某block的内容，可以在子模板的同名块中使用`{{ super() }}`
 
 
 - 新增模板函数  
-
+#
     <?php
     
     use Phalcon\Mvc\View\Engine\Volt;
@@ -939,20 +938,18 @@ Volt 视图最终会被编译成纯PHP代码
     $compiler->addFunction('shuffle', 'str_shuffle');//第二个参数可以是函数名或匿名函数
     
 - 新增过滤器
-
+#
  	//This creates a filter 'hash' that uses the PHP function 'md5'   
 	$compiler->addFilter('hash', 'md5');//第二个参数可以是函数名或匿名函数
 
 - 编写扩展：https://docs.phalconphp.com/zh/latest/reference/volt.html#extensions
 
 - 缓存视图片段
-
-{% cache ("article-" ~ post.id) 3600 %}
-
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
-
-{% endcache %}
+#
+	{% cache ("article-" ~ post.id) 3600 %}
+    	<h1>{{ post.title }}</h1>
+    	<p>{{ post.content }}</p>
+	{% endcache %}
 
 - 可以在模板中直接通过服务名访问通过DI注册的服务。  
 	在php模板中使用“$this->`服务名`”来访问。
@@ -1066,7 +1063,7 @@ Volt 视图最终会被编译成纯PHP代码
 最后，还有一个 findFirstBy&lt;property-name&gt;() 方法。这个方法扩展了前面提及的 “findFirst()” 方法。它允许您利用方法名中的属性名称，通过将要搜索的该字段的内容作为参数传给它，来快速从一个表执行检索操作。
 
 ### 指定数据返回类型
-$findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+`$findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);`
 
 可选的值有：`Resultset::HYDRATE_ARRAYS`、`Resultset::HYDRATE_OBJECTS`、`Resultset::HYDRATE_RECORDS`。
 
