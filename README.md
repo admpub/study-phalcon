@@ -127,17 +127,18 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 ### 指定参数名称 ###
 - 方式一，在数组中指定：
 #
+
 	<?php
 	$router->add(
-    	"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",
-    	array(
-        	"controller" => "posts",
-        	"action"     => "show",
-        	"year"       => 1, // ([0-9]{4})
-        	"month"      => 2, // ([0-9]{2})
-        	"day"        => 3, // ([0-9]{2})
-        	"params"     => 4, // :params
-    	)
+		"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",
+		array(
+			"controller" => "posts",
+			"action"     => "show",
+			"year"       => 1, // ([0-9]{4})
+			"month"      => 2, // ([0-9]{2})
+			"day"        => 3, // ([0-9]{2})
+			"params"     => 4, // :params
+		)
 	);
 
 
@@ -166,12 +167,13 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 
 - 方式二，在路由中指定：
 #
+
 	$router->add(
-    	"/documentation/{chapter}/{name}.{type:[a-z]+}",
-    	array(
-        	"controller" => "documentation",
-        	"action"     => "show"
-    	)
+		"/documentation/{chapter}/{name}.{type:[a-z]+}",
+		array(
+			"controller" => "documentation",
+			"action"     => "show"
+		)
 	);
 
 看见了吗？花括号中的chaper、name和type就是相对应的名称了。
