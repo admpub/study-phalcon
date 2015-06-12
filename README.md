@@ -1374,4 +1374,28 @@ request的更多方法请参考phalcon源代码：`phalcon/http/request.zep`
 [https://docs.phalconphp.com/zh/latest/reference/tutorial-rest.html](https://docs.phalconphp.com/zh/latest/reference/tutorial-rest.html)
 
 
+# 使用 phalcon devtools
+如果提醒无法找到类这样的错误提示，需要在phalcon.php文件中添加以下代码：
+
+	spl_autoload_register(function($className){
+		$classDir = __DIR__.'/scripts/';
+		$classFile = $classDir . str_replace('\\', '/', $className) . '.php';
+		if (file_exists($classFile)) require_once($classFile);
+	});
+
+把所有文件复制到现有phalcon项目下新建的“devtools”文件夹中，并将其中的`webtools.php`复制到public文件夹下，并在public文件夹内新建文件`webtools.config.php`,内容为：
+
+
+	define('PTOOLSPATH',__DIR__.'/../devtools/');
+	define('PTOOLS_IP','127.0.0.1');
+	spl_autoload_register(function($className){
+		$classDir = PTOOLSPATH.'/scripts/';
+		$classFile = $classDir . str_replace('\\', '/', $className) . '.php';
+		if (file_exists($classFile)) require_once($classFile);
+	});
+
+修改public文件夹下的`webtools.php`文件，将其中的`require 'webtools.config.php';`剪切到文件最开头的`<?php`下一行。
+
+经过测试，该工具对PHP版本要求较高，我在PHP5.4下无法使用。
+
 #End
