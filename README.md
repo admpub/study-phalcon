@@ -14,6 +14,16 @@
     ;静态资源文件网址
     staticBaseUri  = /invo/
 
+如果将baseUri设置为`/invo/index.php/`的话，需要在router服务中作如下设置，才能正常工作：
+
+	$di -> set('router', function () {
+		$router = new Router();
+		$router->setUriSource(Router::URI_SOURCE_SERVER_REQUEST_URI);//重要
+		return $router;
+	});
+	
+
+
 第二步：
 在文件`app\config\services.php`中找到`$di->set('url',`所在位置，在其中的匿名函数内return语句前增加一行，输入`$url->setStaticBaseUri($config->application->staticBaseUri);`
 > 
@@ -50,6 +60,254 @@
 > 
 > 即可解决。
 
+## 路由规则 ##
+添加路由规则：
+
+	<?php
+
+	use Phalcon\Mvc\Router;
+
+	// Create the router
+	$router = new Router();
+
+	//Define a route
+	$router->add(
+    	"/admin/:controller/a/:action/:params",
+    	array(
+        	"controller" => 1, //匹配第一个占位符(:controller)
+        	"action"     => 2, //匹配第二个占位符(:action)
+        	"params"     => 3, //匹配第三个占位符(:params)
+    	)
+	);
+
+支持的占位符有：
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%">
+<col width="15%">
+<col width="75%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">占位符</th>
+<th class="head">正则表达式</th>
+<th class="head">Usage</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>/:module</td>
+<td>/([a-zA-Z0-9_-]+)</td>
+<td>Matches a valid module name with alpha-numeric characters only</td>
+</tr>
+<tr class="row-odd"><td>/:controller</td>
+<td>/([a-zA-Z0-9_-]+)</td>
+<td>Matches a valid controller name with alpha-numeric characters only</td>
+</tr>
+<tr class="row-even"><td>/:action</td>
+<td>/([a-zA-Z0-9_]+)</td>
+<td>Matches a valid action name with alpha-numeric characters only</td>
+</tr>
+<tr class="row-odd"><td>/:params</td>
+<td>(/.*)*</td>
+<td>Matches a list of optional words separated by slashes. Use only this placeholder at the end of a route</td>
+</tr>
+<tr class="row-even"><td>/:namespace</td>
+<td>/([a-zA-Z0-9_-]+)</td>
+<td>Matches a single level namespace name</td>
+</tr>
+<tr class="row-odd"><td>/:int</td>
+<td>/([0-9]+)</td>
+<td>Matches an integer parameter</td>
+</tr>
+</tbody>
+</table>
+
+Controller名称是采用驼峰命名法（camel），这意味着“-”和“_”将会被删除并将其后的一个字符大写。
+例如，some_controller 会被转换为 SomeController。
+
+### 指定参数名称 ###
+- 方式一，在数组中指定：
+
+	<?php
+
+	$router->add(
+    	"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",
+    	array(
+        	"controller" => "posts",
+        	"action"     => "show",
+        	"year"       => 1, // ([0-9]{4})
+        	"month"      => 2, // ([0-9]{2})
+        	"day"        => 3, // ([0-9]{2})
+        	"params"     => 4, // :params
+    	)
+	);
+
+
+在上面的例子中，路由没有定义“controller”和“action”部分，而是被指定为“posts”和“show”，这样，用户将不知道控制器的真实请求路径。
+在controller中，这些被命名的参数可以用如下方式这样访问：
+
+	<?php
+	use Phalcon\Mvc\Controller;
+	class PostsController extends Controller{
+
+    	public function indexAction(){
+    	}
+
+   	 	public function showAction(){
+        	// Return "year" parameter
+        	$year = $this->dispatcher->getParam("year");
+
+        	// Return "month" parameter
+        	$month = $this->dispatcher->getParam("month");
+
+        	// Return "day" parameter
+        	$day = $this->dispatcher->getParam("day");
+    	}
+	}
+
+
+- 方式二，在路由中指定：
+#
+	$router->add(
+    	"/documentation/{chapter}/{name}.{type:[a-z]+}",
+    	array(
+        	"controller" => "documentation",
+        	"action"     => "show"
+    	)
+	);
+
+看见了吗？花括号中的chaper、name和type就是相对应的名称了。
+
+总结：路由中的匹配项，可以使用
+
+- 占位符
+- 正则表达式
+- 带命名的正则表达式（命名与正则表达式间用冒号“:”隔开，并整个用花括号括起来）
+- {命名}
+
+指定名称空间的例子：
+#
+	$router->add("/login", array(
+    	'namespace'  => 'Backend\Controllers',
+    	'controller' => 'login',
+    	'action'     => 'index'
+	));
+
+
+### 钩子事件 ###
+转换某个参数的值：
+
+	<?php
+	//The action name allows dashes, an action can be: /products/new-ipod-nano-4-generation
+	$router->add('/products/{slug:[a-z\-]+}', array(
+        'controller' => 'products',
+        'action'     => 'show'
+    ))->convert('slug', function($slug) {
+        //Transform the slug removing the dashes
+        return str_replace('-', '', $slug);
+    });
+
+除了convert方法之外，还支持：
+
+- 匹配回调函数
+#
+	->beforeMatch(function($uri, $route) {
+    	//Check if the request was made with Ajax
+    	if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'xmlhttprequest') {
+        	return false;
+    	}
+    	return true;
+	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')
+
+- 限制主机名
+
+	->setHostName('([a-z+]).company.com');
+
+
+### 路由分组 ###
+	<?php
+	use Phalcon\Mvc\Router;
+	use Phalcon\Mvc\Router\Group as RouterGroup;
+
+	$router = new Router();
+
+	//Create a group with a common module and controller
+	$blog = new RouterGroup(array(
+    	'module'     => 'blog',
+    	'controller' => 'index'
+	));
+
+	//All the routes start with /blog
+	$blog->setPrefix('/blog');
+
+	//Add another route to the group
+	$blog->add('/edit/{id}', array(
+    	'action' => 'edit'
+	));
+
+	//Add the group to the router
+	$router->mount($blog);
+
+或者：
+
+	<?php
+	use Phalcon\Mvc\Router\Group as RouterGroup;
+
+	class BlogRoutes extends RouterGroup{
+    	public function initialize(){
+        	//Default paths
+        	$this->setPaths(array(
+            	'module'    => 'blog',
+            	'namespace' => 'Blog\Controllers'
+        	));
+
+        	//All the routes start with /blog
+        	$this->setPrefix('/blog');
+
+        	//Add another route to the group
+        	$this->add('/edit/{id}', array(
+            	'action' => 'edit'
+        	));
+    	}
+	}
+
+Then mount the group in the router:
+
+	<?php
+	//Add the group to the router
+	$router->mount(new BlogRoutes());
+
+
+### 路由命名 ###
+
+	<?php
+	$route = $router->add("/posts/{year}/{title}", "Posts::show");
+	$route->setName("show-posts");
+
+	//或者这样
+	$router->add("/posts/{year}/{title}", "Posts::show")->setName("show-posts");
+
+然后，我们就可以根据命名来生成符合这条路由的网址了：
+
+	<?php
+	// returns /posts/2012/phalcon-1-0-released
+	echo $url->get(array(
+    	"for"   => "show-posts",				//路由名称
+    	"year"  => "2012",					//参数year的值
+    	"title" => "phalcon-1-0-released" 	//参数title的值
+	));
+
+限制http请求方式：$router->addGet()、$router->addPut()、$router->addPost()……
+
+
+### 指定URI来源 ###
+
+	<?php
+	use Phalcon\Mvc\Router;
+	...
+	$router->setUriSource(Router::URI_SOURCE_GET_URL); // use $_GET['_url'] (default)
+	$router->setUriSource(Router::URI_SOURCE_SERVER_REQUEST_URI); // use $_SERVER['REQUEST_URI'] (default)
+
+
 ## 控制器命名 ##
 默认调用IndexController控制器中的indexAction方法。  
 控制器名称需要加`Controller`后缀，动作名称需要加`Action`后缀。  
@@ -62,7 +320,7 @@
 可以在控制器方法中使用`$this->view->setVar("postId", $postId);`来传递变量到视图，然后在视图中用php来使用此变量，比如：`<?php echo $postId;?>`，setVar方法也可以通过接收关键字索引数组来一次传递多个值(类似于smarty中assign的批量赋值)。
 
 `Phalcon\Mvc\View` 支持视图分层。
-### 分层渲染
+### 分层渲染 ###
 第一步、渲染模板：
 `视图文件目录`/`小写的控制器名（不含后缀）`/`方法名（不含后缀）`.phtml  
 并保存结果。级别代号`LEVEL_ACTION_VIEW`。
@@ -86,7 +344,7 @@
 
 可以在控制器方法中使用`$this->view->setTemplateAfter('common');`来在第三步之前插入一个渲染操作，比如这里渲染模板：`视图文件目录`/layouts/common.phtml 
 
-### 渲染级别控制
+### 渲染级别控制 ###
 可以在控制器方法中使用`$this->view->setRenderLevel(View::LEVEL_NO_RENDER);`来关闭渲染，或者仅仅渲染某个级别`$this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);` 
 
 也可以使用`$this->view->disableLevel(View::LEVEL_MAIN_LAYOUT);`来禁止某个级别的渲染。
@@ -97,13 +355,13 @@
 1. 如果pick方法接收到一个不包含“/”的字符串则仅仅设置`LEVEL_ACTION_VIEW`级视图；如果包含“/”则同时还会把第一个“/”前面的部分作为`LEVEL_LAYOUT`级视图,比如这里会使用“`视图文件目录`/layouts/index.phtml”文件
 2. 如果接收到一个数字索引数组，则会将编号为0的元素作为`LEVEL_ACTION_VIEW`级视图，将编号为1的元素作为`LEVEL_LAYOUT`级视图
 
-### 关闭视图
+### 关闭视图 ###
 如果你的控制器不在视图里产生(或没有)任何输出，你可以禁用视图组件来避免不必要的处理：
 
     $this->view->disable();
 
 
-### 在模板中包含局部模板
+### 在模板中包含局部模板 ###
 
 	<?php $this->partial('shared/login');?>
 	
@@ -116,7 +374,7 @@
 	));
 	?>
 
-## 缓存视图
+## 缓存视图 ##
 在控制器方法中的代码例子：
 
 		//Check whether the cache with key "downloads" exists or has expired
@@ -700,11 +958,11 @@ Volt 视图最终会被编译成纯PHP代码
 	在php模板中使用“$this->`服务名`”来访问。
 
 ## 设计表单
-https://docs.phalconphp.com/zh/latest/reference/tags.html
+[https://docs.phalconphp.com/zh/latest/reference/tags.html](https://docs.phalconphp.com/zh/latest/reference/tags.html)
 
 
 ## 模型
-https://docs.phalconphp.com/zh/latest/reference/models.html
+[https://docs.phalconphp.com/zh/latest/reference/models.html](https://docs.phalconphp.com/zh/latest/reference/models.html)
 模型类的名称使用表名称且首字母大写，继承于`Phalcon\Mvc\Model`。
 文件名称与模型类名称一致。
 
@@ -853,7 +1111,6 @@ $findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 多对多必须关联3个模型，并分别设置它们的关联字段
 
 	<?php
-
 	use Phalcon\Mvc\Model;
 
 	class Robots extends Model
@@ -881,6 +1138,130 @@ $findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 	$this->getRelated('Robots\Parts');
 
 ## PHQL
+在执行操作之前必须要有相应的model文件存在。
+### 创建 PHQL 查询
+- 方式一、直接通过创建`Phalcon\Mvc\Model\Query`类的实例来查询：
+#
+	<?php
+	use Phalcon\Mvc\Model\Query;
+
+	// Instantiate the Query
+	$query = new Query("SELECT * FROM Cars", $this->getDI());
+
+	// Execute the query returning a result if any
+	$cars = $query->execute();
+
+- 方式二、在控制器或视图中，通过modelsManager(模型管理器)来查询：
+#
+	<?php
+	//Executing a simple query
+	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars");
+	$cars   = $query->execute();
+
+	//With bound parameters
+	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars WHERE name = :name:");
+	$cars   = $query->execute(array(
+    	'name' => 'Audi'
+	));
+
+也可以简化的写为：
+
+	//Executing a simple query
+	$cars = $this->modelsManager->executeQuery("SELECT * FROM Cars");
+
+	//Executing with bound parameters
+	$cars = $this->modelsManager->executeQuery("SELECT * FROM Cars WHERE name = :name:", array(
+    	'name' => 'Audi'
+	));
+
+注意：FROM后面的那个不是表名称而是模型类名称，这与真正的SQL语句是不同的。由于是模型类名称，所以也可以带名称空间。
+
+- executeQuery($phql)与Cars::find()的查询结果是一样的；
+- executeQuery($phql)->getFirst()与Cars::findFirst()结果一样。
+
+### 插入数据：
+
+	// Inserting using placeholders
+	$phql = "INSERT INTO Cars (name, brand_id, year, style) "
+      . "VALUES (:name:, :brand_id:, :year:, :style:)";
+	$status=$manager->executeQuery($sql,
+    	array(
+        	'name'     => 'Lamborghini Espada',
+        	'brand_id' => 7,
+        	'year'     => 1969,
+        	'style'    => 'Grand Tourer',
+    	)
+	);
+	//Create a response
+    #$response = new Response();
+	//Check if the insertion was successful
+    if ($status->success() == true) {
+        //Change the HTTP status
+        #$response->setStatusCode(201, "Created");
+        #$robot->id = $status->getModel()->id;
+        #$response->setJsonContent(array('status' => 'OK', 'data' => $robot));
+    } else {
+        //Change the HTTP status
+        #$response->setStatusCode(409, "Conflict");
+        //Send errors to the client
+        $errors = array();
+        foreach ($status->getMessages() as $message) {
+            $errors[] = $message->getMessage();
+        }
+        #$response->setJsonContent(array('status' => 'ERROR', 'messages' => $errors));
+    }
+
+更新、删除数据与插入数据类似。
+
+
+
+### 使用查询构建器创建查询
+
+	//Getting a whole set
+	$robots = $this->modelsManager->createBuilder()
+    ->from('Robots')
+    ->join('RobotsParts')
+    ->orderBy('Robots.name')
+    ->getQuery()
+    ->execute();
+
+	//Getting the first row
+	$robots = $this->modelsManager->createBuilder()
+    ->from('Robots')
+    ->join('RobotsParts')
+    ->orderBy('Robots.name')
+    ->getQuery()
+    ->getSingleResult();
+
+### 绑定参数
+
+	//Passing parameters in the query construction
+	$robots = $this->modelsManager->createBuilder()
+    ->from('Robots')
+    ->where('name = :name:', array('name' => $name))
+    ->andWhere('type = :type:', array('type' => $type))
+    ->getQuery()
+    ->execute();
+
+	//Passing parameters in query execution
+	$robots = $this->modelsManager->createBuilder()
+    ->from('Robots')
+    ->where('name = :name:')
+    ->andWhere('type = :type:')
+    ->getQuery()
+    ->execute(array('name' => $name, 'type' => $type));
+
+### 转义保留字
+将保留字用中括号括起来。例如：
+
+	$phql   = "SELECT * FROM [Update]";
+	$result = $manager->executeQuery($phql);
+
+	$phql   = "SELECT id, [Like] FROM Posts";
+	$result = $manager->executeQuery($phql);
+
+
+
 
 ## 其它
 
@@ -933,7 +1314,7 @@ request的更多方法请参考phalcon源代码：`phalcon/http/request.zep`
 
 从容器中获取的服务的最简单方式就是只用get方法，它将从容器中返回一个新的实例：
 
-	<?php $request = $di->get( 'request' ); ?>
+	<?php $request = $di->get('request'); ?>
 
 或者通过下面这种魔术方法的形式调用：
 
@@ -948,5 +1329,41 @@ request的更多方法请参考phalcon源代码：`phalcon/http/request.zep`
     	$app->response->setStatusCode(404, "Not Found")->sendHeaders();
     	echo 'This is crazy, but this page was not found!';
 	});
+
+
+
+### 微应用
+[https://docs.phalconphp.com/zh/latest/reference/micro.html](https://docs.phalconphp.com/zh/latest/reference/micro.html)  
+支持如下的中间件事件：
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%">
+<col width="55%">
+<col width="23%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">事件名</th>
+<th class="head">触发</th>
+<th class="head">是否可中止操作?</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>before</td>
+<td>应用请求处理之前执行，常用来控制应用的访问权限</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>after</td>
+<td>请求处理后执行，可以用来准备回复内容</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>finish</td>
+<td>发送回复内容后执行， 可以用来执行清理工作</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+### REST API
+[https://docs.phalconphp.com/zh/latest/reference/tutorial-rest.html](https://docs.phalconphp.com/zh/latest/reference/tutorial-rest.html)
+
 
 #End

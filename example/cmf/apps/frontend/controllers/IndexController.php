@@ -13,7 +13,6 @@ class IndexController extends ControllerFrontend{
 	public function indexAction(){
 		#$this->showRunnerInfo();
 		header('content-type:text/html;charset=utf-8');
-		error_reporting(E_ALL);ini_set('display_errors',true);
 
 		$result=Member_account::find(array('limit'=>10));
 		foreach($result as $k=>$v){

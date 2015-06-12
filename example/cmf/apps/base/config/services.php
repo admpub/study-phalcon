@@ -37,6 +37,7 @@ CMF :: $di = new FactoryDefault();
 // 自定义路由
 CMF :: $di -> set('router', function () {
 	$router = new Router();
+	$router -> removeExtraSlashes(true);//删除末尾的斜杠
 	$router -> setDefaultModule(CMF::$config->system->defaultModule);
 
 	if(CMF::$config->route){
