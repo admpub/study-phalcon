@@ -13,7 +13,6 @@ class IndexController extends ControllerFrontend{
 	public function indexAction(){
 		#$this->showRunnerInfo();
 		$this->response->setContentType('text/html','utf-8')->sendHeaders();
-
 		$result=MemberAccount::find(array('limit'=>10));
 		foreach($result as $k=>$v){
 			echo $v->uid,':',$v->account_name,'<br/>';
@@ -26,6 +25,6 @@ class IndexController extends ControllerFrontend{
 		}
 		#\CMF::dump($result);
 		$this->showDbDebug();
-		echo '<h1>hello.</h1>';exit;
+		echo '<h1>hello.</h1>';
 	}
 }

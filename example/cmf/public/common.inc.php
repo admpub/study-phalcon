@@ -4,8 +4,9 @@ ini_set('display_errors', true);
 define('ROOT_PATH', realpath('..') . '/');
 define('APPS_PATH', ROOT_PATH . 'apps/');
 
+CMF :: $startTime = microtime(true);
 class CMF {
-	public static $view, $dispatcher, $loader, $config, $di;
+	public static $view, $dispatcher, $loader, $config, $di, $startTime;
 	public static function dump($var,$exit=false){
 		echo '<pre>';
 		var_dump($var);
@@ -46,5 +47,8 @@ class CMF {
 			return;
 		}
 		return get_class_methods($objOrClass);
+	}
+	public function elaspedTime(){
+		return microtime(true)-self::$startTime;
 	}
 }
