@@ -1239,7 +1239,7 @@ if中可以使用的内置变量：
 </tbody>
 </table>
 
-如果你愿意，除了使用数组作为查询参数外，还可以通过一种面向对象的方式来创建查询：
+如果你愿意，除了使用数组作为查询参数外，还可以通过一种面向对象的方式来创建查询(更多可用类方法详见源码phalcon/mvc/model/criteria.zep)：
 
 	<?php
 	$robots = Robots::query()
@@ -1248,6 +1248,7 @@ if中可以使用的内置变量：
     ->bind(array("type" => "mechanical"))
     ->order("name")
     ->execute();
+
 
 最后，还有一个 findFirstBy&lt;property-name&gt;() 方法。这个方法扩展了前面提及的 “findFirst()” 方法。它允许您利用方法名中的属性名称，通过将要搜索的该字段的内容作为参数传给它，来快速从一个表执行检索操作。
 
