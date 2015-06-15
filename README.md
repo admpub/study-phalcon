@@ -122,25 +122,25 @@
 </table>
 
 Controller名称是采用驼峰命名法（camel），这意味着“-”和“_”将会被删除并将其后的一个字符大写。
-例如，some_controller 会被转换为 SomeController。
+例如，some\_controller 会被转换为 SomeController。
 
 ### 指定参数名称 ###
 - 方式一，在数组中指定：
 
-
-	<?php  
-	$router->add(  
-		"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",  
-		array(  
-			"controller" => "posts",  
-			"action"     => "show",  
-			"year"       => 1, // ([0-9]{4})  
-			"month"      => 2, // ([0-9]{2})  
-			"day"        => 3, // ([0-9]{2})  
-			"params"     => 4, // :params  
-		)  
-	);  
-
+    
+    	<?php  
+    	$router->add(  
+    		"/news/([0-9]{4})/([0-9]{2})/([0-9]{2})/:params",  
+    		array(  
+    			"controller" => "posts",  
+    			"action" => "show",  
+    			"year"   => 1, // ([0-9]{4})  
+    			"month"  => 2, // ([0-9]{2})  
+    			"day"=> 3, // ([0-9]{2})  
+    			"params" => 4, // :params  
+    		)  
+    	);  
+    
 
 在上面的例子中，路由没有定义“controller”和“action”部分，而是被指定为“posts”和“show”，这样，用户将不知道控制器的真实请求路径。
 在controller中，这些被命名的参数可以用如下方式这样访问：
@@ -167,15 +167,15 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 
 - 方式二，在路由中指定：
 
-
-	$router->add(  
-		"/documentation/{chapter}/{name}.{type:[a-z]+}",  
-		array(  
-			"controller" => "documentation",  
-			"action"     => "show"  
-		)  
-	);  
-
+    
+    	$router->add(  
+    		"/documentation/{chapter}/{name}.{type:[a-z]+}",  
+    		array(  
+    			"controller" => "documentation",  
+    			"action" => "show"  
+    		)  
+    	);  
+    
 看见了吗？花括号中的chaper、name和type就是相对应的名称了。
 
 总结：路由中的匹配项，可以使用
@@ -211,19 +211,19 @@ Controller名称是采用驼峰命名法（camel），这意味着“-”和“_
 
 - 匹配回调函数
 
-
-	->beforeMatch(function($uri, $route) {  
-    	//Check if the request was made with Ajax  
-    	if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'xmlhttprequest') {  
-        	return false;  
-    	}  
-    	return true;  
-	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')  
-
+    
+    	->beforeMatch(function($uri, $route) {  
+    		//Check if the request was made with Ajax  
+    		if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'xmlhttprequest') {  
+    			return false;  
+    		}  
+    		return true;  
+    	});//参数可以是匿名函数，也可以采用数组的方式指定某个对象的方法：array(new AjaxFilter(), 'check')  
+    
 - 限制主机名
 
-
-	->setHostName('([a-z+]).company.com');
+    
+    	->setHostName('([a-z+]).company.com');
 
 
 ### 路由分组 ###
@@ -618,20 +618,20 @@ Then mount the group in the router:
 
 - 在注册`view`服务时全局指定模板引擎：
 
-
-	<?php  
-	use Phalcon\Mvc\View;  
-	//Setting up the view component  
-	$di->set('view', function() {  
-		$view = new View();  
-		//A trailing directory separator is required  
-		$view->setViewsDir('../app/views/');  
-		$view->registerEngines(array(  
-			'.my-html' ='MyTemplateAdapter' //元素值可以是类名、服务名或返回模板引擎对象的匿名函数  
-		));  
-		return $view;  
-	}, true);  
-
+    
+    	<?php  
+    	use Phalcon\Mvc\View;  
+    	//Setting up the view component  
+    	$di->set('view', function() {  
+    		$view = new View();  
+    		//A trailing directory separator is required  
+    		$view->setViewsDir('../app/views/');  
+    		$view->registerEngines(array(  
+    			'.my-html' ='MyTemplateAdapter' //元素值可以是类名、服务名或返回模板引擎对象的匿名函数  
+    		));  
+    		return $view;  
+    	}, true);  
+    
 Volt 视图最终会被编译成纯PHP代码
 
 ### Volt模板引擎语法
@@ -781,7 +781,7 @@ Volt 视图最终会被编译成纯PHP代码
       Name: {{ name }} Value: {{ value }}
     {% endfor %}
 
-	else、elsefor
+else、elsefor
 
 
     {% for robot in robots %}
@@ -792,28 +792,28 @@ Volt 视图最终会被编译成纯PHP代码
 
 可以在for结构中使用`{% break %}`和`{% continue %}`来跳出和执行下一次循环
 
-- if条件判断
-基本用法
+- if条件判断  
+	基本用法
 
-
-    {% if robot.type == "cyborg" %}
-    	  {{ robot.name|e }}
-    {% endif %}
     
-    {% if robot.type == "cyborg" %}
-    	{{ robot.name|e }}
-    {% else %}
-    	{{ robot.name|e }} (not a cyborg)
-    {% endif %}
+    	{% if robot.type == "cyborg" %}
+    	  	{{ robot.name|e }}
+    	{% endif %}
     
-    {% if robot.type == "cyborg" %}
-        Robot is a cyborg
-    {% elseif robot.type == "virtual" %}
-        Robot is virtual
-    {% elseif robot.type == "mechanical" %}
-        Robot is mechanical
-    {% endif %}
-
+    	{% if robot.type == "cyborg" %}
+    		{{ robot.name|e }}
+    	{% else %}
+    		{{ robot.name|e }} (not a cyborg)
+    	{% endif %}
+    
+    	{% if robot.type == "cyborg" %}
+    		Robot is a cyborg
+    	{% elseif robot.type == "virtual" %}
+    		Robot is virtual
+    	{% elseif robot.type == "mechanical" %}
+    		Robot is mechanical
+    	{% endif %}
+    
 if中可以使用的内置变量：
 <table class="docutils" border="1">
 <colgroup>
@@ -852,15 +852,15 @@ if中可以使用的内置变量：
 
 - 赋值  
 	- 单个变量赋值： 
-
-    {% set fruits = ['Apple', 'Banana', 'Orange'] %}  
-    {% set name = robot.name %}
-
+    
+    		{% set fruits = ['Apple', 'Banana', 'Orange'] %}  
+    		{% set name = robot.name %}
+    
 
  	- 多个变量赋值：  
-
-    {% set fruits = ['Apple', 'Banana', 'Orange'], name = robot.name, active = true %}
-
+    
+    		{% set fruits = ['Apple', 'Banana', 'Orange'], name = robot.name, active = true %}
+    
 	- 支持的字面值：
 <table border="1" class="docutils">
 <colgroup>
@@ -957,14 +957,14 @@ if中可以使用的内置变量：
 
 - 宏定义：https://docs.phalconphp.com/zh/latest/reference/volt.html#macros
 
-
-    {%- macro my_input(name, class="input-text") %}  
-    {% return text_field(name, 'class': class) %}  
-    {%- endmacro %}  
     
-    {# Call the macro #}  
-    {{ '&lt;p&gt;' ~ my_input('name') ~ '&lt;/p&gt;' }}  
-    {{ '&lt;p&gt;' ~ my_input('name', 'input-text') ~ '&lt;/p&gt;' }}
+    	{%- macro my_input(name, class="input-text") %}  
+    	{% return text_field(name, 'class': class) %}  
+    	{%- endmacro %}  
+    
+    	{# Call the macro #}  
+    	{{ '&lt;p&gt;' ~ my_input('name') ~ '&lt;/p&gt;' }}  
+    	{{ '&lt;p&gt;' ~ my_input('name', 'input-text') ~ '&lt;/p&gt;' }}
 
 	由以上代码可见，模板中字符串间连接符为`~`！
 
@@ -1097,44 +1097,39 @@ if中可以使用的内置变量：
 		`{% block title %}默认标题{% endblock %}`
 
   - 子模板  
-
-		{% extends "templates/base.volt" %}  
-		{% block title %}重新定义的标题{% endblock %}
-
-父模板中块(block)内的内容会被子模板中的同名块中的内容替换，除非在子模板中不存在该块的定义。  
-如果想要保留或引用父模板中某block的内容，可以在子模板的同名块中使用`{{ super() }}`
+    
+    		{% extends "templates/base.volt" %}  
+    		{% block title %}重新定义的标题{% endblock %}
+    
+		父模板中块(block)内的内容会被子模板中的同名块中的内容替换，除非在子模板中不存在该块的定义。  
+		如果想要保留或引用父模板中某block的内容，可以在子模板的同名块中使用`{{ super() }}`
 
 
 - 新增模板函数  
-
-
-    <?php
+        
+    	<?php
+    	use Phalcon\Mvc\View\Engine\Volt;
+    	$volt = new Volt($view, $di);
+    	$compiler = $volt->getCompiler();
     
-    use Phalcon\Mvc\View\Engine\Volt;
-    
-    $volt = new Volt($view, $di);
-    
-    $compiler = $volt->getCompiler();
-    
-    //This binds the function name 'shuffle' in Volt to the PHP function 'str_shuffle'  
-    $compiler->addFunction('shuffle', 'str_shuffle');//第二个参数可以是函数名或匿名函数
+    	//This binds the function name 'shuffle' in Volt to the PHP function 'str_shuffle'  
+    	$compiler->addFunction('shuffle', 'str_shuffle');//第二个参数可以是函数名或匿名函数
     
 - 新增过滤器
-
-
- 	//This creates a filter 'hash' that uses the PHP function 'md5'   
-	$compiler->addFilter('hash', 'md5');//第二个参数可以是函数名或匿名函数
-
+    
+     	//This creates a filter 'hash' that uses the PHP function 'md5'   
+    	$compiler->addFilter('hash', 'md5');//第二个参数可以是函数名或匿名函数
+    
 - 编写扩展：https://docs.phalconphp.com/zh/latest/reference/volt.html#extensions
 
 - 缓存视图片段
 
-
-	{% cache ("article-" ~ post.id) 3600 %}
+    
+    	{% cache ("article-" ~ post.id) 3600 %}
     	<h1>{{ post.title }}</h1>
     	<p>{{ post.content }}</p>
-	{% endcache %}
-
+    	{% endcache %}
+    
 - 可以在模板中直接通过服务名访问通过DI注册的服务。  
 	在php模板中使用“$this->`服务名`”来访问。
 
@@ -1160,22 +1155,22 @@ if中可以使用的内置变量：
 - 运算:  count() sum() average() maximum() minimum()
 - 保存:  save() 
 
-
-	$robots = Robots::find(array(  
-    	"type = 'virtual'",  
-    	"order" => "name",  
-    	"limit" => 100  
-	));  
-	foreach ($robots as $robot) {  
-   		echo $robot->name, "\n";  
-	}  
-	$robots = Robots::find(array(
-    	"conditions" => "type = ?1",
-    	"bind"       => array(1 => "virtual")
-	));
-
-	$robot = Robots::findFirst(array("type = 'virtual'", "order" => "name"));
-	echo "The first virtual robot name is ", $robot->name, "\n";
+    
+    	$robots = Robots::find(array(  
+    		"type = 'virtual'",  
+    		"order" => "name",  
+    		"limit" => 100  
+    	));  
+    	foreach ($robots as $robot) {  
+       		echo $robot->name, "\n";  
+    	}  
+    	$robots = Robots::find(array(
+    		"conditions" => "type = ?1",
+    		"bind"   => array(1 => "virtual")
+    	));
+    
+    	$robot = Robots::findFirst(array("type = 'virtual'", "order" => "name"));
+    	echo "The first virtual robot name is ", $robot->name, "\n";
 
 
 可用的查询选项如下：
@@ -1332,40 +1327,35 @@ if中可以使用的内置变量：
 在执行操作之前必须要有相应的model文件存在。
 ### 创建 PHQL 查询
 - 方式一、直接通过创建`Phalcon\Mvc\Model\Query`类的实例来查询：
-
-
-	<?php
-	use Phalcon\Mvc\Model\Query;
-
-	// Instantiate the Query
-	$query = new Query("SELECT * FROM Cars", $this->getDI());
-
-	// Execute the query returning a result if any
-	$cars = $query->execute();
+    
+    	<?php
+    	use Phalcon\Mvc\Model\Query;
+    
+    	// Instantiate the Query
+    	$query = new Query("SELECT * FROM Cars", $this->getDI());
+    
+    	// Execute the query returning a result if any
+    	$cars = $query->execute();
 
 - 方式二、在控制器或视图中，通过modelsManager(模型管理器)来查询：
 
-
-	<?php
-	//Executing a simple query
-	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars");
-	$cars   = $query->execute();
-
-	//With bound parameters
-	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars WHERE name = :name:");
-	$cars   = $query->execute(array(
-    	'name' => 'Audi'
-	));
-
-也可以简化的写为：
-
-	//Executing a simple query
-	$cars = $this->modelsManager->executeQuery("SELECT * FROM Cars");
-
-	//Executing with bound parameters
-	$cars = $this->modelsManager->executeQuery("SELECT * FROM Cars WHERE name = :name:", array(
-    	'name' => 'Audi'
-	));
+    
+    	<?php
+    	//Executing a simple query
+    	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars");
+    	$cars   = $query->execute();
+    
+    	//With bound parameters
+    	$query  = $this->modelsManager->createQuery("SELECT * FROM Cars WHERE name = :name:");
+    	$cars   = $query->execute(array('name' => 'Audi'));
+    
+	也可以简化的写为：
+    
+    	//Executing a simple query
+    	$cars = $this->modelsManager->executeQuery("SELECT * FROM Cars");
+    
+    	//Executing with bound parameters
+    	$cars = $this->modelsManager->executeQuery("SELECT * FROM Cars WHERE name = :name:", array('name' => 'Audi'));
 
 注意：FROM后面的那个不是表名称而是模型类名称，这与真正的SQL语句是不同的。由于是模型类名称，所以也可以带名称空间。
 
