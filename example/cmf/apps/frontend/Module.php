@@ -28,9 +28,11 @@ class Module implements ModuleDefinitionInterface{
 		$loader=&\CMF::$loader;
 		$ns=ucfirst(self::$_moduleName);
 		$loader->registerNamespaces(array(
-				self::getNamespace().'\Controllers'=>self::getModulePath().'controllers/',
-				self::getNamespace().'\Models'=>self::getModulePath().'models/',
-			),true);
+			self::getNamespace().'\Plugins' => self::getModulePath().'plugins/',
+			self::getNamespace().'\Library' => self::getModulePath().'library/',
+			self::getNamespace().'\Controllers' => self::getModulePath().'controllers/',
+			self::getNamespace().'\Models' => self::getModulePath().'models/',
+		),true);
 		$loader->register();
 	}
 
