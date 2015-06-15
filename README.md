@@ -369,40 +369,25 @@ Then mount the group in the router:
     /**
      * @Get("/")
      */
-    public function indexAction()
-    {
-
-    }
+    public function indexAction() {}
 
     /**
      * @Get("/edit/{id:[0-9]+}", name="edit-robot")
      */
-    public function editAction($id)
-    {
-
-    }
+    public function editAction($id) {}
 
     /**
      * @Route("/save", methods={"POST", "PUT"}, name="save-robot")
      */
-    public function saveAction()
-    {
-
-    }
+    public function saveAction() {}
 
     /**
      * @Route("/delete/{id:[0-9]+}", methods="DELETE",
      *      conversors={id="MyConversors::checkId"})
      */
-    public function deleteAction($id)
-    {
+    public function deleteAction($id) {}
 
-    }
-
-    public function infoAction($id)
-    {
-
-    }
+    public function infoAction($id) {}
 
 	}
 
@@ -486,7 +471,7 @@ Then mount the group in the router:
 </table>
 
 
-如果要将路由映射到模块中的控制器，最好使用addModuleResource方法：
+如果要将路由映射到模块中的控制器，可以使用addModuleResource方法：
 
 	<?php
 	use Phalcon\Mvc\Router\Annotations as RouterAnnotations;
