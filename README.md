@@ -968,8 +968,11 @@ if中可以使用的内置变量：
 
 ## 模型
 [https://docs.phalconphp.com/zh/latest/reference/models.html](https://docs.phalconphp.com/zh/latest/reference/models.html)
-模型类的名称使用表名称且首字母大写（如果表名称含下划线“_”，需要删除下划线并将原下划线位置后的一个字符大写），继承于`Phalcon\Mvc\Model`。
+
+模型类的名称使用表名称且首字母大写（如果表名称含下划线“_”，需要删除下划线并将原下划线位置后的一个字符大写），继承于`Phalcon\Mvc\Model`。  
+
 例如，我们有数据表`member_account`,那么我们需要创建一个模型类`MemberAccount`。
+
 模型类的文件名称与模型类名称一致。
 
 ### 数据库操作方法
