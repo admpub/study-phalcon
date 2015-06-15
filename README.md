@@ -74,9 +74,9 @@
 	$router->add(
     	"/admin/:controller/a/:action/:params",
     	array(
-        	"controller" => 1, //匹配第一个占位符(:controller)
-        	"action"     => 2, //匹配第二个占位符(:action)
-        	"params"     => 3, //匹配第三个占位符(:params)
+        	"controller" => 1, //匹配第一个占位符(/:controller)
+        	"action"     => 2, //匹配第二个占位符(/:action)
+        	"params"     => 3, //匹配第三个占位符(/:params)
     	)
 	);
 
