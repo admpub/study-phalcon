@@ -112,10 +112,11 @@ class SecurityPlugin extends Plugin
 		$allowed = $acl->isAllowed($role, $controller, $action);
 		if ($allowed != Acl::ALLOW) {
 			$dispatcher->forward(array(
-				'controller' => 'errors',
+				'namespace' => 'CMF\Base\Controllers',
+				'controller' => 'index',
 				'action'     => 'show401'
 			));
-                        $this->session->destroy();
+			$this->session->destroy();
 			return false;
 		}
 	}
