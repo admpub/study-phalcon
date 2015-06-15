@@ -36,20 +36,21 @@ try {
 	};
 	#$app->mount(groupRoute(new Products(),'/product',array('get|/'=>'index','post|get|/post'=>'publish')));
 	$app -> get('/', function () use ($app) {
-		$result=\CMF\Base\Models\Member_account::find(array('limit'=>10));
+		$result=\CMF\Base\Models\MemberAccount::find(array('limit'=>10));
 		$content=array();
 		foreach($result as $k=>$v){
 			$content[$k]=$v;
 		}
-		$app->response->setJsonContent($result);
-		CMF::dump($content);
-		return true;
+		$app->response->setContentType('application/json')->sendHeaders();
+		$app->response->setJsonContent($content);
+		#CMF::dump($content);
+		return $app->response;
 	});
 	$app->notFound(function () use ($app) {
 		$app->response->setStatusCode(404, "Not Found")->sendHeaders();
 		echo 'This is crazy, but this page was not found!';
 	});
-	echo $app->handle();
+	$app->handle();
 }
 catch (Exception $e) {
 	echo $e -> getMessage();

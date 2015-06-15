@@ -12,7 +12,7 @@ use \CMF\Base\Models\MemberAccount;
 class IndexController extends ControllerFrontend{
 	public function indexAction(){
 		#$this->showRunnerInfo();
-		header('content-type:text/html;charset=utf-8');
+		$this->response->setContentType('text/html','utf-8')->sendHeaders();
 
 		$result=MemberAccount::find(array('limit'=>10));
 		foreach($result as $k=>$v){

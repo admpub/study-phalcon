@@ -299,8 +299,6 @@ Then mount the group in the router:
     	"title" => "phalcon-1-0-released" 	//参数title的值
 	));
 
-限制http请求方式：$router->addGet()、$router->addPut()、$router->addPost()……
-
 
 ### 指定URI来源 ###
 
@@ -310,6 +308,199 @@ Then mount the group in the router:
 	$router->setUriSource(Router::URI_SOURCE_GET_URL); // use $_GET['_url'] (default)
 	$router->setUriSource(Router::URI_SOURCE_SERVER_REQUEST_URI); // use $_SERVER['REQUEST_URI'] (default)
 
+### 限制HTTP请求方式
+当您使用路由的add方法时，意味着不限制HTTP请求方式。  
+有时我们可以限制一个路由使用一个特定的方式来访问,这在创建RESTful应用程序时将非常有用:
+
+	// This route only will be matched if the HTTP method is GET
+	$router->addGet("/products/edit/{id}", "Products::edit");
+
+	// This route only will be matched if the HTTP method is POST
+	$router->addPost("/products/save", "Products::save");
+
+	// This route will be matched if the HTTP method is POST or PUT
+	$router->add("/products/update")->via(array("POST", "PUT"));
+
+限制http请求方式：$router->addGet()、$router->addPut()、$router->addPost()……
+
+### 设置默认
+可以为通用路径中的 module, controller, action 定义默认值。当一个路由缺少其中任何一项时，路由器可以自动用默认值填充：
+
+	<?php
+	//Setting a specific default
+	$router->setDefaultModule('backend');
+	$router->setDefaultNamespace('Backend\Controllers');
+	$router->setDefaultController('index');
+	$router->setDefaultAction('index');
+
+	//Using an array
+	$router->setDefaults(array(
+    	'controller' => 'index',
+    	'action'     => 'index'
+	));
+
+
+### 匿名路由
+此组件提供了一个与注解服务集成的变体。使用此策略可以在控制器中直接写路由。
+
+	<?php
+	use Phalcon\Mvc\Router\Annotations as RouterAnnotations;
+
+	$di['router'] = function() {
+
+    	//Use the annotations router
+    	$router = new RouterAnnotations(false);
+
+    	//Read the annotations from ProductsController if the uri starts with /api/products
+    	$router->addResource('Products', '/api/products');
+
+    	return $router;
+	};
+
+可以按如下方式定义注解:
+
+	<?php
+	/**
+	 * @RoutePrefix("/api/products")
+	 */
+	class ProductsController
+	{
+
+    /**
+     * @Get("/")
+     */
+    public function indexAction()
+    {
+
+    }
+
+    /**
+     * @Get("/edit/{id:[0-9]+}", name="edit-robot")
+     */
+    public function editAction($id)
+    {
+
+    }
+
+    /**
+     * @Route("/save", methods={"POST", "PUT"}, name="save-robot")
+     */
+    public function saveAction()
+    {
+
+    }
+
+    /**
+     * @Route("/delete/{id:[0-9]+}", methods="DELETE",
+     *      conversors={id="MyConversors::checkId"})
+     */
+    public function deleteAction($id)
+    {
+
+    }
+
+    public function infoAction($id)
+    {
+
+    }
+
+	}
+
+
+支持的注解有：
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%">
+<col width="55%">
+<col width="38%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+<th class="head">Usage</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>RoutePrefix</td>
+<td>A prefix to be prepended to each route uri. This annotation must be placed at the class’ docblock</td>
+<td>@RoutePrefix(“/api/products”)</td>
+</tr>
+<tr class="row-odd"><td>Route</td>
+<td>This annotation marks a method as a route. This annotation must be placed in a method docblock</td>
+<td>@Route(“/api/products/show”)</td>
+</tr>
+<tr class="row-even"><td>Get</td>
+<td>This annotation marks a method as a route restricting the HTTP method to GET</td>
+<td>@Get(“/api/products/search”)</td>
+</tr>
+<tr class="row-odd"><td>Post</td>
+<td>This annotation marks a method as a route restricting the HTTP method to POST</td>
+<td>@Post(“/api/products/save”)</td>
+</tr>
+<tr class="row-even"><td>Put</td>
+<td>This annotation marks a method as a route restricting the HTTP method to PUT</td>
+<td>@Put(“/api/products/save”)</td>
+</tr>
+<tr class="row-odd"><td>Delete</td>
+<td>This annotation marks a method as a route restricting the HTTP method to DELETE</td>
+<td>@Delete(“/api/products/delete/{id}”)</td>
+</tr>
+<tr class="row-even"><td>Options</td>
+<td>This annotation marks a method as a route restricting the HTTP method to OPTIONS</td>
+<td>@Option(“/api/products/info”)</td>
+</tr>
+</tbody>
+</table>
+
+用注解添加路由时，支持以下参数：
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%">
+<col width="55%">
+<col width="38%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+<th class="head">Usage</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>methods</td>
+<td>Define one or more HTTP method that route must meet with</td>
+<td>@Route(“/api/products”, methods={“GET”, “POST”})</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>Define a name for the route</td>
+<td>@Route(“/api/products”, name=”get-products”)</td>
+</tr>
+<tr class="row-even"><td>paths</td>
+<td>An array of paths like the one passed to Phalcon\Mvc\Router::add</td>
+<td>@Route(“/posts/{id}/{slug}”, paths={module=”backend”})</td>
+</tr>
+<tr class="row-odd"><td>conversors</td>
+<td>A hash of conversors to be applied to the parameters</td>
+<td>@Route(“/posts/{id}/{slug}”, conversors={id=”MyConversor::getId”})</td>
+</tr>
+</tbody>
+</table>
+
+
+如果要将路由映射到模块中的控制器，最好使用addModuleResource方法：
+
+	<?php
+	use Phalcon\Mvc\Router\Annotations as RouterAnnotations;
+
+	$di['router'] = function() {
+
+    //Use the annotations router
+    $router = new RouterAnnotations(false);
+
+    //Read the annotations from Backend\Controllers\ProductsController if the uri starts with /api/products
+    $router->addModuleResource('backend', 'Products', '/api/products');
+
+    return $router;
+	};
 
 ## 控制器命名 ##
 默认调用IndexController控制器中的indexAction方法。  
