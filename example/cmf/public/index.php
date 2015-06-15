@@ -25,4 +25,4 @@ try {
 catch (Exception $e) {
 	echo $e -> getMessage();
 }
-echo '<div>',CMF::elaspedTime(),'s</div>';
+echo '<div>',CMF::elapsedTime(),'s</div>';

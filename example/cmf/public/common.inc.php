@@ -48,7 +48,7 @@ class CMF {
 		}
 		return get_class_methods($objOrClass);
 	}
-	public function elaspedTime(){
+	public function elapsedTime(){
 		return microtime(true)-self::$startTime;
 	}
 }
