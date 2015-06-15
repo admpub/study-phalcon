@@ -18,14 +18,16 @@ use Phalcon\Mvc\Model\Query\BuilderInterface;
  */
 
 class ModelBase extends Model {
+
 	public function initialize() {
 		// 以下为主从分离范例
 		// $this->setReadConnectionService('dbSlave');
 		// $this->setWriteConnectionService('dbMaster');
 	}
+
 	// 表前缀
 	public function getSource() {
-		return \CMF :: $config -> database -> prefix . strtolower(basename(get_class($this)));
+		return \CMF :: $config -> database -> prefix . parent :: getSource();
 	}
 
 	public function sqlRead($modelInstanse, $sql, $params) {

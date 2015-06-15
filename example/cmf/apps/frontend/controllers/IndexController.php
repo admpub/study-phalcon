@@ -1,6 +1,6 @@
 <?php
 namespace CMF\Frontend\Controllers;
-use \CMF\Base\Models\Member_account;
+use \CMF\Base\Models\MemberAccount;
 /**
 * description
 *
@@ -14,13 +14,13 @@ class IndexController extends ControllerFrontend{
 		#$this->showRunnerInfo();
 		header('content-type:text/html;charset=utf-8');
 
-		$result=Member_account::find(array('limit'=>10));
+		$result=MemberAccount::find(array('limit'=>10));
 		foreach($result as $k=>$v){
 			echo $v->uid,':',$v->account_name,'<br/>';
 		}
 
 		echo '<h1>-------</h1>';
-		$result=Member_account::findByAccount_name('');
+		$result=MemberAccount::findByAccountName('');
 		foreach($result as $k=>$v){
 			echo $v->uid,':',$v->account_name,'<br/>';
 		}
