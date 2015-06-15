@@ -1075,6 +1075,10 @@ if中可以使用的内置变量：
 
 最后，还有一个 findFirstBy&lt;property-name&gt;() 方法。这个方法扩展了前面提及的 “findFirst()” 方法。它允许您利用方法名中的属性名称，通过将要搜索的该字段的内容作为参数传给它，来快速从一个表执行检索操作。
 
+&lt;property-name&gt;的内容为首字母大写的数据表字段名（如果字段名称含下划线“_”，需要删除下划线并将原下划线位置后的一个字符大写）。
+
+例如，数据表字段名为`user_name`,可以采用`findFirstByUserName('admpub')`方法查询。
+
 ### 指定数据返回类型
 `$findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);`
 
