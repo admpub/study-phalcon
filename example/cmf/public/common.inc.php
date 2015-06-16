@@ -48,6 +48,15 @@ class CMF {
 		}
 		return get_class_methods($objOrClass);
 	}
+	public function getNamespaces($rootNamespace='',$dump = true){
+		if(!$rootNamespace)$rootNamespace='Phalcon|CMF';
+		$namespaces=preg_grep('/^('.$rootNamespace.')/',get_declared_classes());
+		if ($dump) {
+			self::dump($namespaces);
+			return;
+		}
+		return $namespaces;
+	}
 	public function elapsedTime(){
 		return microtime(true)-self::$startTime;
 	}
