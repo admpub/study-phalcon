@@ -123,7 +123,8 @@ CMF :: $di -> set('db', function() {
 
 //If the configuration specify the use of metadata adapter use it or use memory otherwise
 CMF :: $di -> set('modelsMetadata', function() {
-	return new MetaData();
+	return new MetaData();//Memory
+	//new MetaData(array('metaDataDir'=>ROOT_PATH.'cache/'));//Files
 });
 
 //Start the session the first time some component request the session service

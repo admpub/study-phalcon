@@ -1167,7 +1167,7 @@ if中可以使用的内置变量：
     	}  
     	$robots = Robots::find(array(
     		"conditions" => "type = ?1",
-    		"bind"   => array(1 => "virtual")
+    		"bind"   => array(1 => "virtual") //绑定参数（数字占位符）
     	));
     
     	$robot = Robots::findFirst(array("type = 'virtual'", "order" => "name"));
@@ -1190,47 +1190,47 @@ if中可以使用的内置变量：
 <tbody valign="top">
 <tr class="row-even"><td>conditions</td>
 <td>查询操作的搜索条件。用于提取只有那些满足指定条件的记录。默认情况下 Phalcon\Mvc\Model 假定第一个参数就是查询条件。</td>
-<td>“conditions” =&gt; “name LIKE ‘steve%’”</td>
+<td>"conditions" =&gt; "name LIKE 'steve%'"</td>
 </tr>
 <tr class="row-odd"><td>columns</td>
 <td>只返回指定的字段，而不是模型所有的字段。 当用这个选项时，返回的是一个不完整的对象。</td>
-<td>“columns” =&gt; “id, name”</td>
+<td>"columns" =&gt; "id, name"</td>
 </tr>
 <tr class="row-even"><td>bind</td>
 <td>绑定与选项一起使用，通过替换占位符以及转义字段值从而增加安全性。</td>
-<td>“bind” =&gt; array(“status” =&gt; “A”, “type” =&gt; “some-time”)</td>
+<td>"bind" =&gt; array("status" =&gt; "A", "type" =&gt; "some-time")</td>
 </tr>
 <tr class="row-odd"><td>bindTypes</td>
 <td>当绑定参数时，可以使用这个参数为绑定参数定义额外的类型限制从而更加增强安全性。</td>
-<td>“bindTypes” =&gt; array(Column::BIND_TYPE_STR, Column::BIND_TYPE_INT)</td>
+<td>"bindTypes" =&gt; array(Column::BIND_TYPE_STR, Column::BIND_TYPE_INT)</td>
 </tr>
 <tr class="row-even"><td>order</td>
 <td>用于结果排序。使用一个或者多个字段，逗号分隔。</td>
-<td>“order” =&gt; “name DESC, status”</td>
+<td>"order" =&gt; "name DESC, status"</td>
 </tr>
 <tr class="row-odd"><td>limit</td>
 <td>限制查询结果的数量在一定范围内。</td>
-<td>“limit” =&gt; 10 / “limit” =&gt; array(“number” =&gt; 10, “offset” =&gt; 5)</td>
+<td>"limit" =&gt; 10 / "limit" =&gt; array("number" =&gt; 10, "offset" =&gt; 5)</td>
 </tr>
 <tr class="row-even"><td>group</td>
 <td>从多条记录中获取数据并且根据一个或多个字段对结果进行分组。</td>
-<td>“group” =&gt; “name, status”</td>
+<td>"group" =&gt; "name, status"</td>
 </tr>
 <tr class="row-odd"><td>for_update</td>
 <td>通过这个选项， <a href="../api/Phalcon_Mvc_Model.html" class="reference internal"><em>Phalcon\Mvc\Model</em></a>  读取最新的可用数据，并且为读到的每条记录设置独占锁。</td>
-<td>“for_update” =&gt; true</td>
+<td>"for_update" =&gt; true</td>
 </tr>
 <tr class="row-even"><td>shared_lock</td>
 <td>通过这个选项， <a href="../api/Phalcon_Mvc_Model.html" class="reference internal"><em>Phalcon\Mvc\Model</em></a>  读取最新的可用数据，并且为读到的每条记录设置共享锁。</td>
-<td>“shared_lock” =&gt; true</td>
+<td>"shared_lock" =&gt; true</td>
 </tr>
 <tr class="row-odd"><td>cache</td>
 <td>缓存结果集，减少了连续访问数据库。</td>
-<td>“cache” =&gt; array(“lifetime” =&gt; 3600, “key” =&gt; “my-find-key”)</td>
+<td>"cache" =&gt; array("lifetime" =&gt; 3600, "key" =&gt; "my-find-key")</td>
 </tr>
 <tr class="row-even"><td>hydration</td>
 <td>Sets the hydration strategy to represent each returned record in the result</td>
-<td>“hydration” =&gt; Resultset::HYDRATE_OBJECTS</td>
+<td>"hydration" =&gt; Resultset::HYDRATE_OBJECTS</td>
 </tr>
 </tbody>
 </table>
@@ -1241,7 +1241,7 @@ if中可以使用的内置变量：
 	$robots = Robots::query()
     ->where("type = :type:")
     ->andWhere("year < 2000")
-    ->bind(array("type" => "mechanical"))
+    ->bind(array("type" => "mechanical")) //绑定参数（字符串占位符）
     ->order("name")
     ->execute();
 
@@ -1262,6 +1262,31 @@ if中可以使用的内置变量：
 	$robots = Robots::find(array(
     	'hydration' => Resultset::HYDRATE_ARRAYS
 	));
+
+### 绑定参数
+
+#### 占位符
+
+- 数字占位符在sql中的格式为“**?`数字`**”；
+- 字符串占位符在sql中的格式为“**:`字符串`:**”。
+
+#### 参数类型
+默认的参数类型为`\Phalcon\Db\Column::BIND_PARAM_STR`。  
+支持的参数类型：  
+
+- `Column::BIND_PARAM_NULL` 绑定null类型
+- `Column::BIND_PARAM_INT` 绑定整数类型
+- `Column::BIND_PARAM_STR` 绑定字符串类型
+- `Column::BIND_PARAM_BOOL` 绑定bool值类型
+- `Column::BIND_PARAM_DECIMAL` 绑定小数类型
+
+
+		$robots = Robots::find(array(
+    		"conditions" => "name = :name: AND type = ?1",
+    		"bind"   => array('name'=>'admpub',1 => 'virtual'),
+			"bindTypes" => array(Column::BIND_TYPE_STR, Column::BIND_TYPE_STR)
+    	));
+
 
 ### 模型关联
 有四种关联类型：1对1,1对多，多对1，多对多。关联可以是单向或者双向的，每个关联可以是简单的（一个1对1的模型）也可以是复杂的（1组模型）。
@@ -1323,6 +1348,248 @@ if中可以使用的内置变量：
 对于使用名称空间的情况下，可以设置别名，或在model类中使用以下方法，但是对于多对多的情况，对于第三张表由于无法设置别名，只能使用以下方法：
 
 	$this->getRelated('Robots\Parts');
+
+### 验证信息
+`Phalcon\Mvc\Model`可以生成如下验证类型信息:
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%">
+<col width="86%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>PresenceOf</td>
+<td>Generated when a field with a non-null attribute on the database is trying to insert/update a null value</td>
+</tr>
+<tr class="row-odd"><td>ConstraintViolation</td>
+<td>Generated when a field part of a virtual foreign key is trying to insert/update a value that doesn’t exist in the referenced model</td>
+</tr>
+<tr class="row-even"><td>InvalidValue</td>
+<td>Generated when a validator failed because of an invalid value</td>
+</tr>
+<tr class="row-odd"><td>InvalidCreateAttempt</td>
+<td>Produced when a record is attempted to be created but it already exists</td>
+</tr>
+<tr class="row-even"><td>InvalidUpdateAttempt</td>
+<td>Produced when a record is attempted to be updated but it doesn’t exist</td>
+</tr>
+</tbody>
+</table>
+
+###事件
+`Phalcon\Mvc\Model`会根据各个操作依序各自执行如下事件：
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%">
+<col width="13%">
+<col width="12%">
+<col width="66%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">操作</th>
+<th class="head">事件名</th>
+<th class="head">是否能终止执行?</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Inserting/Updating</td>
+<td>beforeValidation</td>
+<td>YES</td>
+<td>Is executed before the fields are validated for not nulls/empty strings or foreign keys</td>
+</tr>
+<tr class="row-odd"><td>Inserting</td>
+<td>beforeValidationOnCreate</td>
+<td>YES</td>
+<td>Is executed before the fields are validated for not nulls/empty strings or foreign keys when an insertion operation is being made</td>
+</tr>
+<tr class="row-even"><td>Updating</td>
+<td>beforeValidationOnUpdate</td>
+<td>YES</td>
+<td>Is executed before the fields are validated for not nulls/empty strings or foreign keys when an updating operation is being made</td>
+</tr>
+<tr class="row-odd"><td>Inserting/Updating</td>
+<td>onValidationFails</td>
+<td>YES (already stopped)</td>
+<td>Is executed after an integrity validator fails</td>
+</tr>
+<tr class="row-even"><td>Inserting</td>
+<td>afterValidationOnCreate</td>
+<td>YES</td>
+<td>Is executed after the fields are validated for not nulls/empty strings or foreign keys when an insertion operation is being made</td>
+</tr>
+<tr class="row-odd"><td>Updating</td>
+<td>afterValidationOnUpdate</td>
+<td>YES</td>
+<td>Is executed after the fields are validated for not nulls/empty strings or foreign keys when an updating operation is being made</td>
+</tr>
+<tr class="row-even"><td>Inserting/Updating</td>
+<td>afterValidation</td>
+<td>YES</td>
+<td>Is executed after the fields are validated for not nulls/empty strings or foreign keys</td>
+</tr>
+<tr class="row-odd"><td>Inserting/Updating</td>
+<td>beforeSave</td>
+<td>YES</td>
+<td>Runs before the required operation over the database system</td>
+</tr>
+<tr class="row-even"><td>Updating</td>
+<td>beforeUpdate</td>
+<td>YES</td>
+<td>Runs before the required operation over the database system only when an updating operation is being made</td>
+</tr>
+<tr class="row-odd"><td>Inserting</td>
+<td>beforeCreate</td>
+<td>YES</td>
+<td>Runs before the required operation over the database system only when an inserting operation is being made</td>
+</tr>
+<tr class="row-even"><td>Updating</td>
+<td>afterUpdate</td>
+<td>NO</td>
+<td>Runs after the required operation over the database system only when an updating operation is being made</td>
+</tr>
+<tr class="row-odd"><td>Inserting</td>
+<td>afterCreate</td>
+<td>NO</td>
+<td>Runs after the required operation over the database system only when an inserting operation is being made</td>
+</tr>
+<tr class="row-even"><td>Inserting/Updating</td>
+<td>afterSave</td>
+<td>NO</td>
+<td>Runs after the required operation over the database system</td>
+</tr>
+</tbody>
+</table>
+
+### 验证数据
+    
+    <?php
+    
+    use Phalcon\Mvc\Model;
+    use Phalcon\Mvc\Model\Validator\Uniqueness;
+    use Phalcon\Mvc\Model\Validator\InclusionIn;
+    
+    class Robots extends \Phalcon\Mvc\Model
+    {
+    
+    	public function validation()
+    	{
+    
+    		$this->validate(new InclusionIn(
+    			array(
+    				"field"  => "type",
+    				"domain" => array("Mechanical", "Virtual")
+    			)
+    		));
+    
+    		$this->validate(new Uniqueness(
+    			array(
+    				"field"   => "name",
+    				"message" => "The robot name must be unique"
+    			)
+    		));
+    
+    		return $this->validationHasFailed() != true;
+    	}
+    
+    }
+
+`Phalcon\Mvc\Model\Validator`包含以下验证：   
+ 
+    Email
+    Exclusionin
+    Inclusionin
+    Numericality
+    PresenceOf
+    Regex
+    StringLength
+    Uniqueness
+    Url
+
+
+### 字段注解策略
+
+    <?php
+    
+    use Phalcon\Mvc\Model;
+    
+    class Robots extends Model
+    {
+    
+    /**
+     * @Primary
+     * @Identity
+     * @Column(type="integer", nullable=false)
+     */
+    public $id;
+    
+    /**
+     * @Column(type="string", length=70, nullable=false)
+     */
+    public $name;
+    
+    /**
+     * @Column(type="string", length=32, nullable=false)
+     */
+    public $type;
+    
+    /**
+     * @Column(type="integer", nullable=false)
+     */
+    public $year;
+    
+    }
+
+支持如下注解：
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%">
+<col width="85%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Primary</td>
+<td>Mark the field as part of the table’s primary key</td>
+</tr>
+<tr class="row-odd"><td>Identity</td>
+<td>The field is an auto_increment/serial column</td>
+</tr>
+<tr class="row-even"><td>Column</td>
+<td>This marks an attribute as a mapped column</td>
+</tr>
+</tbody>
+</table>
+注解@Column支持如下参数：
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%">
+<col width="85%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>type</td>
+<td>The column’s type (string, integer, decimal, boolean)</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>The column’s length if any</td>
+</tr>
+<tr class="row-even"><td>nullable</td>
+<td>Set whether the column accepts null values or not</td>
+</tr>
+</tbody>
+</table>
 
 ## PHQL
 在执行操作之前必须要有相应的model文件存在。
