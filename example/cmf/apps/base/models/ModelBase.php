@@ -30,14 +30,14 @@ class ModelBase extends Model {
 		return \CMF :: $config -> database -> prefix . parent :: getSource();
 	}
 
-	public function sqlRead($modelInstanse, $sql, $params) {
+	public function sqlRead($sql, $params=array()) {
 		// Execute the query
-		return new Resultset(null, $modelInstanse, $modelInstanse -> getReadConnection() -> query($sql, $params));
+		return new Resultset(null, $this, $this -> getReadConnection() -> query($sql, $params));
 	}
 
-	public function sqlWrite($modelInstanse, $sql, $params) {
+	public function sqlWrite($sql, $params=array()) {
 		// Execute the query
-		return new Resultset(null, $modelInstanse, $modelInstanse -> getWriteConnection() -> query($sql, $params));
+		return new Resultset(null, $this, $this -> getWriteConnection() -> query($sql, $params));
 	}
 
 	// 保存之前要执行的操作
