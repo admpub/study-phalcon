@@ -893,19 +893,20 @@ if中可以使用的内置变量：
 </tr>
 </tbody>
 </table>
+    
+   数组可以用中括号或花括号定义
 
-	数组可以用中括号或花括号定义
-	{# Other simple array #}
-	{{ ['Apple', 1, 2.5, false, null] }}
-
-	{# Multi-Dimensional array #}
-	{{ [[1, 2], [3, 4], [5, 6]] }}
-
-	{# Hash-style array #}
-	{{ ['first': 1, 'second': 4/2, 'third': '3'] }}
-
-	{% set myArray = {'Apple', 'Banana', 'Orange'} %}
-	{% set myHash  = {'first': 1, 'second': 4/2, 'third': '3'} %}
+    	{# Other simple array #}
+    	{{ ['Apple', 1, 2.5, false, null] }}
+    
+    	{# Multi-Dimensional array #}
+    	{{ [[1, 2], [3, 4], [5, 6]] }}
+    
+    	{# Hash-style array #}
+    	{{ ['first': 1, 'second': 4/2, 'third': '3'] }}
+    
+    	{% set myArray = {'Apple', 'Banana', 'Orange'} %}
+    	{% set myHash  = {'first': 1, 'second': 4/2, 'third': '3'} %}
 
 算术运算符和比较符与PHP语法中的一致，逻辑运算符为：`or`,`and`,`not`
 
@@ -963,8 +964,8 @@ if中可以使用的内置变量：
     	{%- endmacro %}  
     
     	{# Call the macro #}  
-    	{{ '&lt;p&gt;' ~ my_input('name') ~ '&lt;/p&gt;' }}  
-    	{{ '&lt;p&gt;' ~ my_input('name', 'input-text') ~ '&lt;/p&gt;' }}
+    	{{ '<p>' ~ my_input('name') ~ '</p>' }}  
+    	{{ '<p>' ~ my_input('name', 'input-text') ~ '</p>' }}
 
 	由以上代码可见，模板中字符串间连接符为`~`！
 
