@@ -30,19 +30,19 @@ class ModelBase extends Model {
 		return \CMF :: $config -> database -> prefix . parent :: getSource();
 	}
 
-	public function dbConn($rw='r'){
-		return $this->getDI()->get('db');
+	static public function dbConn($rw='r'){
+		return \Phalcon\Di::getDefault()->get('db');
 	}
 
 	// 原生SQL查询
 	public function rawQuery($sql) {
-		$query=$this->dbConn('r')->query($sql);
+		$query=self::dbConn('r')->query($sql);
 		return $query;
 	}
 
 	// 执行原生SQL
 	public function rawExec($sql,$returnLastInsertId=false) {
-		$dbh=$this->dbConn('w');
+		$dbh=self::dbConn('w');
 		$affected=$dbh->exec($sql);
 		if($returnLastInsertId)return $dbh->lastInsertId();
 		return $affected;
@@ -50,25 +50,25 @@ class ModelBase extends Model {
 
 	public function sqlRead($sql, $params=array()) {
 		// Execute the query
-		return new RS(null, $this, $this -> getReadConnection() -> query($sql, $params));
+		return new Resultset(null, $this, $this -> getReadConnection() -> query($sql, $params));
 	}
 
 	public function sqlWrite($sql, $params=array()) {
 		// Execute the query
-		return new RS(null, $this, $this -> getWriteConnection() -> query($sql, $params));
+		return new Resultset(null, $this, $this -> getWriteConnection() -> query($sql, $params));
 	}
 
 	// 开始事务
 	public function begin() {
-		$this->dbConn('w') -> begin();
+		self::dbConn('w') -> begin();
 	}
 
 	// 结束事务
 	public function end($isOk = true) {
 		if ($isOk) {
-			$this->dbConn('w') -> commit();
+			self::dbConn('w') -> commit();
 		} else {
-			$this->dbConn('w') -> rollback();
+			self::dbConn('w') -> rollback();
 		}
 	}
 
