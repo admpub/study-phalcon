@@ -30,39 +30,45 @@ class ModelBase extends Model {
 		return \CMF :: $config -> database -> prefix . parent :: getSource();
 	}
 
+	public function dbConn($rw='r'){
+		return $this->getDI()->get('db');
+	}
+
+	// 原生SQL查询
+	public function rawQuery($sql) {
+		$query=$this->dbConn('r')->query($sql);
+		return $query;
+	}
+
+	// 执行原生SQL
+	public function rawExec($sql,$returnLastInsertId=false) {
+		$dbh=$this->dbConn('w');
+		$affected=$dbh->exec($sql);
+		if($returnLastInsertId)return $dbh->lastInsertId();
+		return $affected;
+	}
+
 	public function sqlRead($sql, $params=array()) {
 		// Execute the query
-		return new Resultset(null, $this, $this -> getReadConnection() -> query($sql, $params));
+		return new RS(null, $this, $this -> getReadConnection() -> query($sql, $params));
 	}
 
 	public function sqlWrite($sql, $params=array()) {
 		// Execute the query
-		return new Resultset(null, $this, $this -> getWriteConnection() -> query($sql, $params));
-	}
-
-	// 保存之前要执行的操作
-	public function beforeSave() {
-		// Convert the array into a string
-		// $this->status = join(',', $this->status);
-	}
-
-	// 查询之后要执行的操作
-	public function afterFetch() {
-		// Convert the string to an array
-		// $this->status = explode(',', $this->status);
+		return new RS(null, $this, $this -> getWriteConnection() -> query($sql, $params));
 	}
 
 	// 开始事务
 	public function begin() {
-		$this -> db -> begin();
+		$this->dbConn('w') -> begin();
 	}
 
 	// 结束事务
 	public function end($isOk = true) {
 		if ($isOk) {
-			$this -> db -> commit();
+			$this->dbConn('w') -> commit();
 		} else {
-			$this -> db -> rollback();
+			$this->dbConn('w') -> rollback();
 		}
 	}
 
