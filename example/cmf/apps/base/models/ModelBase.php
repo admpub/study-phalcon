@@ -34,6 +34,13 @@ class ModelBase extends Model {
 		return \Phalcon\Di::getDefault()->get('db');
 	}
 
+
+
+
+	// =======================================================\
+	// 原生SQL支持
+	// =======================================================|
+
 	// 原生SQL查询
 	public function rawQuery($sql,$params=null) {
 		if($params){
@@ -75,9 +82,65 @@ class ModelBase extends Model {
 		}else{
 			$affected=$dbh->exec($sql);
 		}
-		if($returnLastInsertId)return $dbh->lastInsertId();
+		if($returnLastInsertId)return $affected>0?$dbh->lastInsertId():0;
 		return $affected;
 	}
+
+	public function rawSelect($fields='*',$table,$condtion='',$params=null){
+		if($table{0}!='`')$table='`'.\CMF::table($table).'`';
+		if($condtion)$condtion=' WHERE '.$condtion;
+		if(!$fields)$fields='*';
+		$sql='SELECT '.$fields.' FROM '.$table.$condtion;
+		return self::rawQuery($sql,$params);
+	}
+
+	public function rawInsert($table,$data,$retId=true){
+		$values='';
+		foreach($data as $k=>$v){
+			if($values)$values.=',';
+			$values.='?';
+		}
+		if($table{0}!='`')$table='`'.\CMF::table($table).'`';
+		$sql='INSERT INTO '.$table.' (`'.implode('`,`',array_keys($data)).'`) VALUES ('.$values.')';
+		return self::rawExec($sql,array_values($data),$retId);
+	}
+
+	public function rawUpdate($table,$data,$where='',$params=array()){
+		$values='';
+		$_params=array();
+		foreach($data as $k=>$v){
+			if($values)$values.=',';
+			$values.='`'.$k.'`=?';
+			$_params[]=$v;
+		}
+		if($params){
+			foreach($params as $v)$_params[]=$v;
+		}
+		if($where) $where=' WHERE '.$where;
+		if($table{0}!='`')$table='`'.\CMF::table($table).'`';
+		$sql='UPDATE '.$table.' SET '.$values.$where;
+		return self::rawExec($sql,$_params);
+	}
+
+	public function rawDelete($table,$where,$data=null){
+		if($table{0}!='`')$table='`'.\CMF::table($table).'`';
+		$sql='DELETE FROM '.$table.' WHERE '.$where;
+		return self::rawExec($sql,$data);
+	}
+
+	public function rawReplace($table,$data,$retId=true){
+		$values='';
+		foreach($data as $k=>$v){
+			if($values)$values.=',';
+			$values.='?';
+		}
+		if($table{0}!='`')$table='`'.\CMF::table($table).'`';
+		$sql='REPLACE INTO '.$table.' (`'.implode('`,`',array_keys($data)).'`) VALUES ('.$values.')';
+		return self::rawExec($sql,array_values($data),$retId);
+	}
+	//========================================================/
+
+
 
 	public function sqlRead($sql, $params=array()) {
 		// Execute the query

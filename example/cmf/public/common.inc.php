@@ -9,6 +9,9 @@ define('CACHE_PATH', ROOT_PATH . 'cache/');
 CMF :: $startTime = microtime(true);
 class CMF {
 	public static $view, $dispatcher, $loader, $config, $di, $startTime;
+	public static function table($table = '') {
+		return self::$config->data->prefix.$table;
+	}
 	public static function dump($var,$exit=false){
 		echo '<pre>';
 		var_dump($var);
