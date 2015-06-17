@@ -7,7 +7,7 @@ spl_autoload_register(function($className) {
 //设置区开始=======================
 $modelsDir = __DIR__ . '/models';		//模型文件保存路径
 $tablePrefix = 'Cge';					//数据表前缀
-$baseClass = 'ControllerBase';			//基类
+$baseClass = 'ModelBase';				//基类
 $namespace = 'CMF\Base\Models';			//模型类所属名称空间
 //设置区结束========================
 
