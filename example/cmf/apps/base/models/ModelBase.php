@@ -35,15 +35,46 @@ class ModelBase extends Model {
 	}
 
 	// 原生SQL查询
-	public function rawQuery($sql) {
-		$query=self::dbConn('r')->query($sql);
-		return $query;
+	public function rawQuery($sql,$params=null) {
+		if($params){
+			$sth=self::dbConn('r')->prepare($sql);
+			if(is_array($params)){
+				if(is_array(reset($params))){
+					foreach($params as $k=>$v){
+						$sth->bindValue($k, $v[0], $v[1]/*PDO::PARAM_INT*/);
+					}
+					$params=null;
+				}
+			}else{
+				$params=array($params);
+			}
+			$sth->execute($params);
+		}else{
+			$sth=self::dbConn('r')->query($sql);
+		}
+		return $sth;
 	}
 
 	// 执行原生SQL
-	public function rawExec($sql,$returnLastInsertId=false) {
+	public function rawExec($sql,$params=null,$returnLastInsertId=false) {
 		$dbh=self::dbConn('w');
-		$affected=$dbh->exec($sql);
+		if($params){
+			$sth=$dbh->prepare($sql);
+			if(is_array($params)){
+				if(is_array(reset($params))){
+					foreach($params as $k=>$v){
+						$sth->bindValue($k, $v[0], $v[1]/*PDO::PARAM_INT*/);
+					}
+					$params=null;
+				}
+			}else{
+				$params=array($params);
+			}
+			$res=$sth->execute($params);
+			$affected=$res?$sth->rowCount():-1;
+		}else{
+			$affected=$dbh->exec($sql);
+		}
 		if($returnLastInsertId)return $dbh->lastInsertId();
 		return $affected;
 	}

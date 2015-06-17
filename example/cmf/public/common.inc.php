@@ -1,8 +1,10 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', true);
+define('PUBLIC_PATH', __DIR__ . '/');
 define('ROOT_PATH', realpath('..') . '/');
 define('APPS_PATH', ROOT_PATH . 'apps/');
+define('CACHE_PATH', ROOT_PATH . 'cache/');
 
 CMF :: $startTime = microtime(true);
 class CMF {
