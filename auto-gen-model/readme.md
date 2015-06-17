@@ -18,3 +18,5 @@
 
 6. 点击app\genModels.bat文件开始工作吧。
 
+
+注：第1、2步主要是修复phalcon2.0.2中的bug，由于phalcon2.0.3中已经修复了，所以在phalcon大于2.0.2时可以跳过这两步。
