@@ -10,7 +10,7 @@ CMF :: $startTime = microtime(true);
 class CMF {
 	public static $view, $dispatcher, $loader, $config, $di, $startTime;
 	public static function table($table = '') {
-		return self::$config->data->prefix.$table;
+		return self::$config->database->prefix.$table;
 	}
 	public static function dump($var,$exit=false){
 		echo '<pre>';
