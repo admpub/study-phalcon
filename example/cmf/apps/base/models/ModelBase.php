@@ -78,7 +78,7 @@ class ModelBase extends Model {
 				$params=array($params);
 			}
 			$res=$sth->execute($params);
-			$affected=$res?$sth->rowCount():-1;
+			$affected=$res?$sth->rowCount():0;
 		}else{
 			$affected=$dbh->exec($sql);
 		}
