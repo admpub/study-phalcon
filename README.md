@@ -1760,6 +1760,11 @@ if中可以使用的内置变量：
 	//获取$_REQUEST['email']
     $email=$this->request->get("email", "email");
 
+还有 $this->request->getPut、$this->request->getServer等等。  
+要判断某个键的元素是否存在只需要将这里的get换成has即可。  
+比如：hasQuery('email')、has('email')、hasPost('email')、hasPut('email')、hasServer('HTTP_REFERER')。
+
+
 request的更多方法请参考phalcon源代码：`phalcon/http/request.zep`
 
 
