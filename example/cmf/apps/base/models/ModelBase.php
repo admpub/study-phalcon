@@ -43,8 +43,8 @@ class ModelBase extends Model {
 
 	// 原生SQL查询
 	public function rawQuery($sql,$params=null) {
-		if($params){
-			$sth=self::dbConn('r')->prepare($sql);
+		$sth=self::dbConn('r')->prepare($sql);
+		if($params!==null){
 			if(is_array($params)){
 				if(is_array(reset($params))){
 					foreach($params as $k=>$v){
@@ -57,7 +57,7 @@ class ModelBase extends Model {
 			}
 			$sth->execute($params);
 		}else{
-			$sth=self::dbConn('r')->query($sql);
+			$sth->execute();
 		}
 		$sth->setFetchMode(\PDO::FETCH_ASSOC);
 		return $sth;

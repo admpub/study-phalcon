@@ -27,4 +27,14 @@ class IndexController extends ControllerFrontend{
 		$this->showDbDebug();
 		echo '<h1>hello.</h1>';
 	}
+
+	public function i18nAction(){
+		$this->response->setContentType('text/html','utf-8')->sendHeaders();
+		\CMF::getClassInfo('Locale');
+		$locale = \Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		// Locale could be something like "en_GB" or "en"
+		echo $locale,'<br/>';
+		$formatter = new \MessageFormatter($locale, '€ {0, number, integer}');
+		echo $formatter->format(array(4560.5)),'<br/>';
+	}
 }
