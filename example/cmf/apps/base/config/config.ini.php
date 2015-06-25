@@ -22,8 +22,8 @@ defaultModule  = frontend
 debug          = 1
 
 [route]
-/errors/:action = "{'module':'base','controller':'errors','action':1}"
-/login          = "{'module':'frontend','controller':'login','action':'index','method':['POST']}"
-/admin          = "{'module':'backend','controller':'index','action':'index'}"
-/admin/:controller          = "{'module':'backend','controller':1,'action':'index'}"
-/admin/:controller/:action  = "{'module':'backend','controller':1,'action':2}"
+<GET,POST>/errors/:action	= "{'module':'base','controller':'errors','action':1}"
+<POST>/login				= "{'module':'frontend','controller':'login','action':'index'}"
+/admin						= "{'module':'backend','controller':'index','action':'index'}"
+/admin/:controller			= "{'module':'backend','controller':1,'action':'index'}"
+/admin/:controller/:action	= "{'module':'backend','controller':1,'action':2}"

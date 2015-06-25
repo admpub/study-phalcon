@@ -46,12 +46,47 @@ CMF :: $di -> set('router', function () {
 			$v=json_decode($vo,true);
 			//json_decode解析失败
 			if(is_null($v))$v=CMF::simpleJsonDecode($vo);
-			#CMF::dump(compact('k','v'));
 			if(!$v)continue;
-			if(!empty($v['method'])){
-				$method=$v['method'];
+			if($k{0}=='<'){
+				$pos=strpos($k,'>');
+				if($pos>0){
+					$methods=substr($k,1,$pos-1);
+					$methods=trim($methods,', ');
+					$k=substr($k,$pos+1);
+					$k=trim($k);
+					if($methods){
+						$methods=explode(',',$methods);
+						if(empty($v['action'])){
+							if(isset($v['method'])) unset($v['method']);
+							foreach($methods as $key=>$val){
+								$val=trim($val);
+								if($val){
+									$method=strtoupper($val);
+									$v['action']=strtolower($val);
+									$router->add($k, $v)->via(array($method));
+								}
+							}
+							continue;
+						}else{
+							$v['method']=array();
+							foreach($methods as $key=>$val){
+								$val=trim($val);
+								if($val)$v['method'][]=strtoupper($val);
+							}
+						}
+					}
+				}else{
+					$k=ltrim($k,'<');
+				}
+			}
+			#CMF::dump(compact('k','v'));
+			$methods=null;
+			if(isset($v['method'])){
+				$methods=$v['method'];
 				unset($v['method']);
-				$router->add($k, $v)->via((array)$method);
+			}
+			if($methods){
+				$router->add($k, $v)->via((array)$methods);
 			}else{
 				$router->add($k, $v);
 			}
