@@ -59,6 +59,7 @@ class ModelBase extends Model {
 		}else{
 			$sth=self::dbConn('r')->query($sql);
 		}
+		$sth->setFetchMode(\PDO::FETCH_ASSOC);
 		return $sth;
 	}
 
