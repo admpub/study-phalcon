@@ -42,3 +42,25 @@ mobileapp模块下controllers文件内的文件，应该这样定义名称空间
 或者(MobileApp与模块目录不一致，除非你的模块目录名为mobileApp或MobileApp)  
 `namespace CMF\MobileApp\Controllers;` 
 都是不符合规范的。
+
+#路由规则说明
+配置在“apps\base\config\config.ini.php”文件中[route]节点的路由规则按照以下格式添加：
+
+	<GET,POST>/errors/show404	= "{'module':'base','controller':'errors','action':'show404'}"
+
+- 等号左边包含两部分内容：
+
+	1. HTTP请求方式，它们用尖括号括起来，如果支持多种HTTP请求方式则相互用半角逗号“,”隔开；
+	2. 路由网址规则。
+
+	第一部分是可选的，如果没有第一部分则意味着任意请求方式均能访问。
+
+- 等号右边部分为对应的设置(json格式)。  
+
+	如果不指定action值的话，会将当前的HTTP请求方式的全小写名称作为action值。
+
+	> 此功能只在设置了上面所说的第一部分内容，也就是明确限制了HTTP请求方式时才有效。  
+
+	比如，上面的规则，如果不设置action值，当用GET方式访问网址时，action值为get，用POST方式访问网址时，action值为post。
+
+
