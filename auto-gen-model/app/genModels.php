@@ -17,6 +17,13 @@ $dbschemaDir = __DIR__ . '/models/base';		//
 if(!is_dir($modelsDir))mkdir($modelsDir,0777,true);
 if(!is_dir($dbschemaDir))mkdir($dbschemaDir,0777,true);
 
+//先清空目录内的文件
+seekDir($dbschemaDir,function($dbschemaDir, $file) use($baseClass) {
+	if($baseClass.'.php'==$file)return;
+	unlink($dbschemaDir . '/' . $file);
+	echo 'delete ' . $dbschemaDir . '/' . $file . PHP_EOL;
+});
+
 $allModel = new \Phalcon\Builder\AllModels(array('directory' => __DIR__ . '/../',
 	'modelsDir' => $dbschemaDir,
 	'extends' => $baseClass,
@@ -33,7 +40,7 @@ if($tablePrefix)seekDir($dbschemaDir,function($dbschemaDir, $file) use($tablePre
 seekDir($dbschemaDir,function($dbschemaDir, $file) use($tablePrefix,$namespace,$baseClass,$dbschemaClassSuffix,$dbschemaNamespace,$modelsDir) {
 	$suffix = $dbschemaClassSuffix;
 	$info=explode('.',$file);
-	if($baseClass.'.php'==$file || $file==$info[0].$suffix.'.'.$info[1])return;
+	if($baseClass.'.php'==$file)return;
 	$content = file_get_contents($dbschemaDir . '/' . $file);
 	if($tablePrefix)$content = preg_replace('/(class )'.$tablePrefix.'([^ ]+)( extends )/','$1$2'.$suffix.'$3', $content);
 	else $content = preg_replace('/(class )([^ ]+)( extends )/','$1$2'.$suffix.'$3', $content);

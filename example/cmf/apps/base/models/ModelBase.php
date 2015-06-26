@@ -31,7 +31,7 @@ class ModelBase extends Model {
 	}
 
 	static public function dbConn($rw='r'){
-		return \Phalcon\Di::getDefault()->get('db');
+		return \Phalcon\Di::getDefault()->getShared('db');
 	}
 
 
@@ -218,7 +218,7 @@ class ModelBase extends Model {
 	 * @param array $bindTypes
 	 */
 	public function selectReadConnection($intermediate, $bindParams, $bindTypes) {
-		return $this -> getDI() -> get('db');
+		return $this -> getDI() -> getShared('db');
 		// 以下是范例
 		// Check if there is a 'where' clause in the select
 		if (isset($intermediate['where'])) {
