@@ -9,7 +9,7 @@ use \CMF\Base\Models\MemberAccount;
 * @update:2015/6/10
 */
 
-class IndexController extends ControllerFrontend{
+class ExampleController extends ControllerFrontend{
 	public function indexAction(){
 		#$this->showRunnerInfo();
 		$this->response->setContentType('text/html','utf-8')->sendHeaders();
