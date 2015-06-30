@@ -43,6 +43,10 @@ class ModelBase extends Model {
 
 	// 原生SQL查询
 	public function rawQuery($sql,$params=null) {
+		if (\CMF::$config->system->debug) {
+			\CMF::$di->getProfiler()->startProfile($sql);
+			\CMF::$di->getShared('dbLogger')->log($sql,\Phalcon\Logger::INFO);
+		}
 		$sth=self::dbConn('r')->prepare($sql);
 		if($params!==null){
 			if(is_array($params)){
@@ -53,18 +57,25 @@ class ModelBase extends Model {
 					$params=null;
 				}
 			}else{
-				$params=array($params);
+				$params=array(1=>$params);
 			}
 			$sth->execute($params);
 		}else{
 			$sth->execute();
 		}
 		$sth->setFetchMode(\PDO::FETCH_ASSOC);
+		if (\CMF::$config->system->debug) {
+			\CMF::$di->getProfiler()->stopProfile();
+		}
 		return $sth;
 	}
 
 	// 执行原生SQL
 	public function rawExec($sql,$params=null,$returnLastInsertId=false) {
+		if (\CMF::$config->system->debug) {
+			\CMF::$di->getProfiler()->startProfile($sql);
+			\CMF::$di->getShared('dbLogger')->log($sql,\Phalcon\Logger::INFO);
+		}
 		$dbh=self::dbConn('w');
 		if($params){
 			$sth=$dbh->prepare($sql);
@@ -76,12 +87,15 @@ class ModelBase extends Model {
 					$params=null;
 				}
 			}else{
-				$params=array($params);
+				$params=array(1=>$params);
 			}
 			$res=$sth->execute($params);
 			$affected=$res?$sth->rowCount():0;
 		}else{
 			$affected=$dbh->exec($sql);
+		}
+		if (\CMF::$config->system->debug) {
+			\CMF::$di->getProfiler()->stopProfile();
 		}
 		if($returnLastInsertId)return $affected>0?$dbh->lastInsertId():0;
 		return $affected;

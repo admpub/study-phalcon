@@ -151,6 +151,11 @@ CMF :: $di -> set('profiler', function(){
 	return new ProfilerDb();
 }, true);
 
+CSQ::$di->set('dbLogger',function(){
+	$logger = new \Phalcon\Logger\Adapter\File(CACHE_PATH.'logs/debug_sql.log');
+	return $logger;
+},true);
+
 CMF :: $di -> set('db', function() {
 	if(CMF::$config->system->debug){
 		$eventsManager = new EventsManager();
@@ -160,6 +165,7 @@ CMF :: $di -> set('db', function() {
 		$eventsManager->attach('db', function($event, $connection) use ($profiler) {
 			if ($event->getType() == 'beforeQuery') {
 				$profiler->startProfile($connection->getSQLStatement());
+				CMF::$di->getShared('dbLogger')->log($connection->getSQLStatement(),\Phalcon\Logger::INFO);
 			}
 			if ($event->getType() == 'afterQuery') {
 				$profiler->stopProfile();
