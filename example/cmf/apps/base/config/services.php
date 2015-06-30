@@ -3,7 +3,6 @@ if(defined('APPS_PATH')==false)die('Access Denied.');
 
 use Phalcon\Loader;
 use Phalcon\Mvc\View;
-use Phalcon\Mvc\Router;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
@@ -17,16 +16,37 @@ CMF :: $view = new View();
 CMF :: $view -> registerEngines(array('.volt' => 'volt'));
 
 CMF :: $loader = new Loader();
-CMF :: $loader -> registerNamespaces(array(
+$namespaces=array(
 	'CMF\Base\Plugins' => APPS_PATH . 'base/plugins/',
 	'CMF\Base\Library' => APPS_PATH . 'base/library/',
 	'CMF\Base\Controllers' => APPS_PATH . 'base/controllers/',
 	'CMF\Base\Models' => APPS_PATH . 'base/models/',
-),true);
+);
+$annotationsRoutes=array();
+if (CMF :: $config->module) {
+	foreach (CMF :: $config->module as $k => $v) {
+		if (!$v) continue;
+		$namespaces['CMF\\'.ucfirst($k).'\Controllers']=APPS_PATH .$k. '/controllers/';
+		if(strpos($v,':')){
+			$routes=explode(';',trim($v));
+			if($routes){
+				foreach($routes as $r){
+					$r=trim($r);
+					if(!$r)continue;
+					$tmp=explode(':',$r);
+					$controller=trim($tmp[0]);
+					$route=trim($tmp[1]);
+					if($controller&&$route)$annotationsRoutes[$k][$controller]=$route;
+					unset($tmp,$controller,$route);
+				}
+			}
+		}
+	}
+}
+CMF :: $loader -> registerNamespaces($namespaces,true);
+CMF :: $loader -> register();
 $eventsManager = new EventsManager();
 if(!CMF::$config->system->debug){
-	include(APPS_PATH.'base/plugins/NotFoundPlugin.php');
-	include(APPS_PATH.'base/plugins/SecurityPlugin.php');
 	#$eventsManager -> attach('dispatch:beforeDispatch', new \CMF\Base\Plugins\SecurityPlugin);
 	$eventsManager -> attach('dispatch:beforeException', new \CMF\Base\Plugins\NotFoundPlugin);
 }
@@ -34,9 +54,9 @@ CMF :: $dispatcher = new Dispatcher();
 CMF :: $dispatcher -> setEventsManager($eventsManager);
 
 CMF :: $di = new FactoryDefault();
-// 自定义路由
+/*/ 自定义路由
 CMF :: $di -> set('router', function () {
-	$router = new Router();
+	$router = new \Phalcon\Mvc\Router();
 	$router -> removeExtraSlashes(true);//删除末尾的斜杠
 	$router -> setDefaultModule(CMF::$config->system->defaultModule);
 
@@ -94,7 +114,34 @@ CMF :: $di -> set('router', function () {
 	}
 	return $router;
 });
+*/
 
+/* 注解
+CMF :: $di->set('annotations', function () {
+	$annotations = new \Phalcon\Annotations\Adapter\Files(array(
+		'annotationsDir' => CACHE_PATH.'annotations/'
+	));
+	return $annotations;
+},true);// */
+
+// 定义注解路由
+CMF :: $di->set('router', function () use($annotationsRoutes) {
+	$router = new \Phalcon\Mvc\Router\Annotations(false);
+	$router->removeExtraSlashes(true); //删除末尾的斜杠
+	$router->setDefaultModule(CMF::$config->system->defaultModule);
+	//$router->addModuleResource('frontend', 'CSQ\Frontend\Controllers\Member', '/member');
+	if($annotationsRoutes){
+		foreach($annotationsRoutes as $module=>$routes){
+			if(!$routes) continue;
+			$moduleNamespace=ucfirst($module);
+			foreach($routes as $c=>$r){
+				if($r{0}!='/')$r='/'.$r;
+				$router->addModuleResource($module, 'CMF\\'.$moduleNamespace.'\Controllers\\'.$c, $r);
+			}
+		}
+	}
+	return $router;
+},true);
 
 CMF :: $di -> set('url', function() {
 	$url = new \CMF\Base\Library\MyUrl();
