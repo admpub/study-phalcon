@@ -22,7 +22,7 @@ $namespaces=array(
 	'CMF\Base\Controllers' => APPS_PATH . 'base/controllers/',
 	'CMF\Base\Models' => APPS_PATH . 'base/models/',
 );
-$annotationsRoutes=array();
+$annotationRoutes=array();
 if (CMF :: $config->module) {
 	foreach (CMF :: $config->module as $k => $v) {
 		if (!$v) continue;
@@ -36,7 +36,7 @@ if (CMF :: $config->module) {
 					$tmp=explode(':',$r);
 					$controller=trim($tmp[0]);
 					$route=trim($tmp[1]);
-					if($controller&&$route)$annotationsRoutes[$k][$controller]=$route;
+					if($controller&&$route)$annotationRoutes[$k][$controller]=$route;
 					unset($tmp,$controller,$route);
 				}
 			}
@@ -54,18 +54,34 @@ CMF :: $dispatcher = new Dispatcher();
 CMF :: $dispatcher -> setEventsManager($eventsManager);
 
 CMF :: $di = new FactoryDefault();
-/*/ 自定义路由
-CMF :: $di -> set('router', function () {
-	$router = new \Phalcon\Mvc\Router();
-	$router -> removeExtraSlashes(true);//删除末尾的斜杠
-	$router -> setDefaultModule(CMF::$config->system->defaultModule);
 
-	if(CMF::$config->route){
-		foreach(CMF::$config->route as $k=>$v){
-			$vo=str_replace("'",'"',$v);
-			$v=json_decode($vo,true);
-			//json_decode解析失败
-			if(is_null($v))$v=CMF::simpleJsonDecode($vo);
+/* 注解
+CMF :: $di->set('annotations', function () {
+	$annotations = new \Phalcon\Annotations\Adapter\Files(array(
+		'annotationsDir' => CACHE_PATH.'annotations/'
+	));
+	return $annotations;
+},true);// */
+
+// 定义注解路由
+CMF :: $di->set('router', function () use($annotationRoutes) {
+	$router = new \Phalcon\Mvc\Router\Annotations(false);
+	$router->removeExtraSlashes(true); //删除末尾的斜杠
+	$router->setDefaultModule(CMF::$config->system->defaultModule);
+	//$router->addModuleResource('frontend', 'CSQ\Frontend\Controllers\Member', '/member');
+	if($annotationRoutes){
+		foreach($annotationRoutes as $module=>$routes){
+			if(!$routes) continue;
+			$moduleNamespace=ucfirst($module);
+			foreach($routes as $c=>$r){
+				if($r{0}!='/')$r='/'.$r;
+				$router->addModuleResource($module, 'CMF\\'.$moduleNamespace.'\Controllers\\'.$c, $r);
+			}
+		}
+	}
+	$route=json_decode(file_get_contents(APPS_PATH . 'base/config/route.json.php'),true);
+	if($route){
+		foreach($route as $k=>$v){
 			if(!$v)continue;
 			if($k{0}=='<'){
 				$pos=strpos($k,'>');
@@ -99,7 +115,6 @@ CMF :: $di -> set('router', function () {
 					$k=ltrim($k,'<');
 				}
 			}
-			#CMF::dump(compact('k','v'));
 			$methods=null;
 			if(isset($v['method'])){
 				$methods=$v['method'];
@@ -109,34 +124,6 @@ CMF :: $di -> set('router', function () {
 				$router->add($k, $v)->via((array)$methods);
 			}else{
 				$router->add($k, $v);
-			}
-		}
-	}
-	return $router;
-});
-*/
-
-/* 注解
-CMF :: $di->set('annotations', function () {
-	$annotations = new \Phalcon\Annotations\Adapter\Files(array(
-		'annotationsDir' => CACHE_PATH.'annotations/'
-	));
-	return $annotations;
-},true);// */
-
-// 定义注解路由
-CMF :: $di->set('router', function () use($annotationsRoutes) {
-	$router = new \Phalcon\Mvc\Router\Annotations(false);
-	$router->removeExtraSlashes(true); //删除末尾的斜杠
-	$router->setDefaultModule(CMF::$config->system->defaultModule);
-	//$router->addModuleResource('frontend', 'CSQ\Frontend\Controllers\Member', '/member');
-	if($annotationsRoutes){
-		foreach($annotationsRoutes as $module=>$routes){
-			if(!$routes) continue;
-			$moduleNamespace=ucfirst($module);
-			foreach($routes as $c=>$r){
-				if($r{0}!='/')$r='/'.$r;
-				$router->addModuleResource($module, 'CMF\\'.$moduleNamespace.'\Controllers\\'.$c, $r);
 			}
 		}
 	}

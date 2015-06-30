@@ -65,30 +65,4 @@ class CMF {
 	public function elapsedTime(){
 		return microtime(true)-self::$startTime;
 	}
-	public function simpleJsonDecode($vo){
-		$vo=ltrim($vo,'{');
-		$vo=rtrim($vo,'}');
-		$vs=explode(',',$vo);
-		if(!$vs)return null;
-		$v=array();
-		foreach($vs as $v2){
-			$s=explode(':',trim($v2));
-			if(!isset($s[1]))continue;
-			$s[0]=trim($s[0],'"');
-			$s[1]=trim($s[1],'"');
-			if(empty($s[0])||empty($s[1]))continue;
-			if(is_numeric($s[1]))$s[1]=intval($s[1]);
-			elseif($s[1]{0}=='['){
-				$s[1]=ltrim($s[1],'[');
-				$s[1]=rtrim($s[1],']');
-				$arr=explode('],[',$s[1]);
-				$s[1]=array();
-				if($arr)foreach($arr as $va){
-					$s[1][]=trim($va,'"');
-				}
-			}
-			$v[$s[0]]=$s[1];
-		}
-		return $v;
-	}
 }
