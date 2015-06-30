@@ -487,6 +487,25 @@ Then mount the group in the router:
     return $router;
 	};
 
+###路由执行事件
+依次按以下顺序执行：
+
+    dispatch:beforeDispatchLoop
+    开始循环匹配路由
+    dispatch:beforeDispatch
+    dispatch:beforeNotFoundAction
+    dispatch:beforeExecuteRoute
+    beforeExecuteRoute($dispatcher)
+    initialize() -> dispatch:afterInitialize
+    执行路由到的方法
+    dispatch:afterExecuteRoute
+    dispatch:afterDispatch
+    afterExecuteRoute($dispatcher)
+	结束循环匹配路由
+    dispatch:afterDispatchLoop
+
+> 其中，以“dispatch:”开头的均为eventManager中定义的事件名称。“xxx(...)”这种格式的均为控制器中的方法。
+
 ## 控制器命名 ##
 默认调用IndexController控制器中的indexAction方法。  
 控制器名称需要加`Controller`后缀，动作名称需要加`Action`后缀。  
