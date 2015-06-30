@@ -52,12 +52,13 @@ class ModelBase extends Model {
 			if(is_array($params)){
 				if(is_array(reset($params))){
 					foreach($params as $k=>$v){
+						if(gettype($k)=='integer')$k+=1;
 						$sth->bindValue($k, $v[0], $v[1]/*PDO::PARAM_INT*/);
 					}
 					$params=null;
 				}
 			}else{
-				$params=array(1=>$params);
+				$params=array($params);
 			}
 			$sth->execute($params);
 		}else{
@@ -82,12 +83,13 @@ class ModelBase extends Model {
 			if(is_array($params)){
 				if(is_array(reset($params))){
 					foreach($params as $k=>$v){
+						if(gettype($k)=='integer')$k+=1;
 						$sth->bindValue($k, $v[0], $v[1]/*PDO::PARAM_INT*/);
 					}
 					$params=null;
 				}
 			}else{
-				$params=array(1=>$params);
+				$params=array($params);
 			}
 			$res=$sth->execute($params);
 			$affected=$res?$sth->rowCount():0;
