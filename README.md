@@ -1168,12 +1168,7 @@ if中可以使用的内置变量：
 
 ### 数据库操作方法
 
-- 添加:  直接设置传递过来的值即可 或可以使用save()方法
-- 更新:  save()
-- 删除:  delete()
-- 查找:  find() findFirst()
-- 运算:  count() sum() average() maximum() minimum()
-- 保存:  save() 
+#### 查找:  find() findFirst()
 
     
     	$robots = Robots::find(array(  
@@ -1270,6 +1265,96 @@ if中可以使用的内置变量：
 &lt;property-name&gt;的内容为首字母大写的数据表字段名（如果字段名称含下划线“_”，需要删除下划线并将原下划线位置后的一个字符大写）。
 
 例如，数据表字段名为`user_name`,可以采用`findFirstByUserName('admpub')`方法查询。
+
+#### 添加:  create() 或 save()
+
+    //Creating a new robot
+    $robot = new Robots();
+    $robot->type = 'mechanical';
+    $robot->name = 'Astro Boy';
+    $robot->year = 1952;
+    $robot->create();
+    
+    //Passing an array to create
+    $robot = new Robots();
+    $robot->create(array(
+    	'type' => 'mechanical',
+    	'name' => 'Astroy Boy',
+    	'year' => 1952
+    ));
+
+#### 更新:  update() 或 save()
+    
+    //Updating a robot name
+    $robot = Robots::findFirst("id=100");
+    $robot->name = "Biomass";
+    $robot->update();
+
+	//Passing an array to update
+	$robot->create(array(
+    	'name' => 'Biomass'
+    ),array('name'));//第二个参数用于指定允许的键
+    
+#### 删除:  delete()
+    
+    $robot = Robots::findFirst("id=100");
+    $robot->delete();
+    
+    foreach (Robots::find("type = 'mechanical'") as $robot) {
+    	$robot->delete();
+    }
+
+#### 运算:  
+- count() 
+    
+    	//How many robots are there?
+    	$number = Robots::count();
+    	echo "There are ", $number, "\n";
+    	
+    	//How many mechanical robots are there?
+    	$number = Robots::count("type='mechanical'");
+    	echo "There are ", $number, " mechanical robots\n"
+    
+- sum() 
+    
+    	//How much are all robots?
+    	$sum = Robots::sum(array('column' => 'price'));
+    	echo "The total price of robots is ", $sum, "\n";
+    
+    	//How much are mechanical robots?
+    	$sum = Robots::sum(array("type='mechanical'", 'column' => 'price'));
+    	echo "The total price of mechanical robots is  ", $sum, "\n";
+    	 
+- average() 
+
+	用法与sum类似
+
+- maximum() 
+
+	用法与sum类似
+
+- minimum()
+
+	用法与sum类似
+
+#### 保存:  save() 
+    
+    $robot = new Robots();
+    $robot->type = 'mechanical';
+    $robot->name = 'Astro Boy';
+    $robot->year = 1952;
+    if ($robot->save() == false) {
+    	echo "Umh, We can't store robots right now ";
+    	foreach ($robot->getMessages() as $message) {
+    		echo $message;
+    	}
+    } else {
+    	echo "Great, a new robot was saved successfully!";
+    }
+    
+
+	$robot = new Robots();
+	$robot->save(array('type'=>'mechanical'),array('type'));//参数分别为array data,array whiteList
 
 ### 指定数据返回类型
 `$findResult->setHydrateMode(Resultset::HYDRATE_ARRAYS);`
@@ -1770,7 +1855,8 @@ if中可以使用的内置变量：
 
 ### From 表单接收
 
-	//获取$_POST['name'],第二个参数是过滤器，还可以传递第三个参数作为默认值,第四个参数为是否允许为空
+	//获取$_POST['name'],第二个参数是过滤器，还可以传递第三个参数作为默认值,第四个参数为是否允许为空。
+	//如果第一个参数为null或不传递任何参数的话，返回$_POST,以下getXXX()方法类似。
     $name= $this->request->getPost("name", "string");
 
 	//获取$_GET['email']
