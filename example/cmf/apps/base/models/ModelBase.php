@@ -122,6 +122,25 @@ class ModelBase extends Model {
 		return self::rawExec($sql,array_values($data),$retId);
 	}
 
+	public function rawInsertBatch($table,$data){
+		$values='';
+		$fields='`'.implode('`,`',array_keys(reset($data))).'`';
+		$params=array();
+		foreach($data as $val){
+			$vstring='';
+			foreach($val as $v){
+				if($vstring)$vstring.=',';
+				$vstring.='?';
+				$params[]=$v;
+			}
+			if($vstring)$values.='('.$vstring.'),';
+		}
+		$values=rtrim($values,',');
+		if($table{0}!='`')$table='`'.\CSQ::table($table).'`';
+		$sql='INSERT INTO '.$table.' ('.$fields.') VALUES '.$values;
+		return self::rawExec($sql,$params);
+	}
+
 	public function rawUpdate($table,$data,$where='',$params=array()){
 		$values='';
 		$_params=array();
@@ -181,6 +200,19 @@ class ModelBase extends Model {
 		} else {
 			self::dbConn('w') -> rollback();
 		}
+	}
+
+	public function pageItems($parameters,$number=20,$className=null){
+		$page = isset($_REQUEST['page'])&&($_REQUEST['page']=intval($_REQUEST['page']))>0?$_REQUEST['page']:1;
+		$offset = ($page-1)*$number;
+		$parameters['limit'] = array('number'=>$number,'offset'=>$offset);
+		if(is_string($className)||is_null($className)){
+			$data = !$className?self::find($parameters):call_user_func_array(strpos($className,'::')?$className:$className.'::find',array($parameters));
+		}else{
+			$data = call_user_func_array($className,array($parameters));
+		}
+		$data=self::pageSplit($data, $number, $page);
+		return $data;
 	}
 
 	/**

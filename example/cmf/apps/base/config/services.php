@@ -35,7 +35,7 @@ if (CMF :: $config->module) {
 					if(!$r)continue;
 					$tmp=explode(':',$r);
 					$controller=trim($tmp[0]);
-					$route=trim($tmp[1]);
+					$route=isset($tmp[1])&&!empty($tmp[1])?trim($tmp[1]):'/'.strtolower($controller);
 					if($controller&&$route)$annotationRoutes[$k][$controller]=$route;
 					unset($tmp,$controller,$route);
 				}

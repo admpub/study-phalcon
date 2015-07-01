@@ -42,8 +42,10 @@ seekDir($dbschemaDir,function($dbschemaDir, $file) use($tablePrefix,$namespace,$
 	$info=explode('.',$file);
 	if($baseClass.'.php'==$file)return;
 	$content = file_get_contents($dbschemaDir . '/' . $file);
-	if($tablePrefix)$content = preg_replace('/(class )'.$tablePrefix.'([^ ]+)( extends )/','$1$2'.$suffix.'$3', $content);
-	else $content = preg_replace('/(class )([^ ]+)( extends )/','$1$2'.$suffix.'$3', $content);
+	if($tablePrefix){
+		$content = preg_replace('/(class )'.$tablePrefix.'([^ ]+)( extends )/','$1$2'.$suffix.'$3', $content);
+		$content = preg_replace('/ \\* @return '.$tablePrefix.$info[0].' /',' * @return '.$info[0].' ', $content);
+	}else $content = preg_replace('/(class )([^ ]+)( extends )/','$1$2'.$suffix.'$3', $content);
 	$content = preg_replace('/(public function getSource\(\)\s*{\s+)return \'[^\']+\';(\s+})/', '$1return parent::getSource();$2', $content);
 	file_put_contents($dbschemaDir . '/' . $info[0].$suffix.'.'.$info[1], $content);
 	unlink($dbschemaDir . '/' . $file);
