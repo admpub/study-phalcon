@@ -1293,7 +1293,21 @@ if中可以使用的内置变量：
 	//Passing an array to update
 	$robot->create(array(
     	'name' => 'Biomass'
-    ),array('name'));//第二个参数用于指定允许的键
+    ),array('name'));//第二个参数用于指定允许设置的字段的名称,不指定的话则表示允许数据表内全部字段名称的键。
+
+	
+> 如果传入的数组的键与数据表字段名不一致，可以使用`$robot->assign(<数组>, <键值分别为数组键名与数据表字段名组成的数组>, <允许的字段>)`来赋值。例如：
+> 
+>     $robot = new Robots();
+> 	$robot->assign(
+> 		array(
+>     		'name' ='Biomass'
+>     	),
+> 		array('name'=>'user_name'),
+> 		array('user_name')
+> 	);
+> 	$robot->create();
+> 
     
 #### 删除:  delete()
     
