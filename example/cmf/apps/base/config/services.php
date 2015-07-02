@@ -27,7 +27,7 @@ if (CMF :: $config->module) {
 	foreach (CMF :: $config->module as $k => $v) {
 		if (!$v) continue;
 		$namespaces['CMF\\'.ucfirst($k).'\Controllers']=APPS_PATH .$k. '/controllers/';
-		if(strpos($v,':')){
+		if(is_string($v)){
 			$routes=explode(';',trim($v));
 			if($routes){
 				foreach($routes as $r){
