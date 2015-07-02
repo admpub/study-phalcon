@@ -210,6 +210,10 @@ CMF :: $di -> set('flash', function() {
 	));
 });
 
+CMF :: $di->set('filter',function(){
+	return new \CMF\Base\Library\MyFilter();
+},true);
+
 /**
  * Register a user component
  *
