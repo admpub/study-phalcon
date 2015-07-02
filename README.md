@@ -1883,6 +1883,36 @@ if中可以使用的内置变量：
 要判断某个键的元素是否存在只需要将这里的get换成has即可。  
 比如：hasQuery('email')、has('email')、hasPost('email')、hasPut('email')、hasServer('HTTP_REFERER')。
 
+支持的过滤器有：
+
+- email
+
+- absint
+
+- int
+
+- int!
+
+	使用intval函数处理
+
+- string
+
+- float
+
+- float!
+
+	使用doubleval函数处理
+
+- alphanum
+
+- trim
+
+- striptags
+
+- lower
+
+- upper
+
 
 request的更多方法请参考phalcon源代码：`phalcon/http/request.zep`
 
