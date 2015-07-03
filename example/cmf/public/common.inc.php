@@ -9,12 +9,20 @@ define('CACHE_PATH', ROOT_PATH . 'cache/');
 CMF :: $startTime = microtime(true);
 class CMF {
 	public static $view, $dispatcher, $loader, $config, $di, $startTime;
-
+	private static $_imageEngine;
 
 	public static function table($table = '') {
 		return self :: $config -> database -> prefix . $table;
 	}
 
+	public function image($file, $width = null, $height = null) {
+		if(!self::$_imageEngine)self::$_imageEngine = new \ReflectionClass('\Phalcon\Image\Adapter\\'.(class_exists('imagick',false)?'Imagick':'Gd'));
+		return self::$_imageEngine->newInstance($file, $width, $height);
+	}
+
+	public function verifyFile($file, $mimeTypes, $extTypes = null, $maxSize = -1, $genRandFileName = true){
+		return \CMF\Base\Library\FileHelper::verifyAll($file, $mimeTypes, $extTypes, $maxSize, $genRandFileName);
+	}
 
 	public static function dump($var, $exit = false) {
 		echo '<pre>';
