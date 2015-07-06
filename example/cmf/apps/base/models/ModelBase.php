@@ -202,6 +202,13 @@ class ModelBase extends Model {
 		}
 	}
 
+	/**
+	 * 更便捷的获取分页数据
+	 * @param  array  			$parameters 查询条件
+	 * @param  integer 			$number     每页数据量
+	 * @param  string|array  	$className  执行查询的操作。可以是：类名(如未指定方法名，会自动调用该类中的find方法)、数组(包含 对象/类名 和方法名)、匿名函数
+	 * @return object
+	 */
 	public function pageItems($parameters,$number=20,$className=null){
 		$page = isset($_REQUEST['page'])&&($_REQUEST['page']=intval($_REQUEST['page']))>0?$_REQUEST['page']:1;
 		$offset = ($page-1)*$number;
