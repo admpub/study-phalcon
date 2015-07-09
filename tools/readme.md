@@ -1,0 +1,1 @@
+[http://www.ibm.com/developerworks/cn/rational/rationaledge/content/feb05/bell/#N100A2](http://www.ibm.com/developerworks/cn/rational/rationaledge/content/feb05/bell/#N100A2 "UML")
