@@ -165,7 +165,7 @@ class ModelBase extends Model {
 		}
 		$values = rtrim($values, ',');
 		if ($table{0} != '`') {
-			$table = '`' . \CSQ::table($table) . '`';
+			$table = '`' . \CMF::table($table) . '`';
 		}
 
 		$sql = 'INSERT INTO ' . $table . ' (' . $fields . ') VALUES ' . $values;

@@ -68,7 +68,6 @@ CMF :: $di->set('router', function () use($annotationRoutes) {
 	$router = new \Phalcon\Mvc\Router\Annotations(false);
 	$router->removeExtraSlashes(true); //删除末尾的斜杠
 	$router->setDefaultModule(CMF::$config->system->defaultModule);
-	//$router->addModuleResource('frontend', 'CSQ\Frontend\Controllers\Member', '/member');
 	if($annotationRoutes){
 		foreach($annotationRoutes as $module=>$routes){
 			if(!$routes) continue;
