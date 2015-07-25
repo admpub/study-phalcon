@@ -151,7 +151,7 @@ CMF :: $di -> set('profiler', function(){
 	return new ProfilerDb();
 }, true);
 
-CSQ::$di->set('dbLogger',function(){
+CMF :: $di->set('dbLogger',function(){
 	$logger = new \Phalcon\Logger\Adapter\File(CACHE_PATH.'logs/debug_sql.log');
 	return $logger;
 },true);
