@@ -11,7 +11,7 @@ charset  = utf8
 [module]
 base            = "Index:/errors;"
 backend         = "Index:/admin;"
-frontend        = "Index:/;"
+frontend        = "Index:/index;"
 
 [system]
 ;支持非伪静态网址

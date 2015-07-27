@@ -8,17 +8,17 @@ class Module implements ModuleDefinitionInterface{
 	private static $_modulePath=null,$_config=null,$_namespace=null;
 	private static $_moduleName='backend';
 
-	public function getConfig(){
+	public static function getConfig(){
 		if(is_null(self::$_config)) self::$_config = new ConfigIni(self::getModulePath() . 'config/config.ini.php');
 		return self::$_config;
 	}
 
-	public function getNamespace(){
+	public static function getNamespace(){
 		if(is_null(self::$_namespace)) self::$_namespace = 'CMF\\'.ucfirst(self::$_moduleName);
 		return self::$_namespace;
 	}
 
-	public function getModulePath(){
+	public static function getModulePath(){
 		if(is_null(self::$_modulePath)) self::$_modulePath=APPS_PATH.self::$_moduleName.'/';
 		return self::$_modulePath;
 	}

@@ -15,12 +15,12 @@ class CMF {
 		return self :: $config -> database -> prefix . $table;
 	}
 
-	public function image($file, $width = null, $height = null) {
+	public static function image($file, $width = null, $height = null) {
 		if(!self::$_imageEngine)self::$_imageEngine = new \ReflectionClass('\Phalcon\Image\Adapter\\'.(class_exists('imagick',false)?'Imagick':'Gd'));
 		return self::$_imageEngine->newInstance($file, $width, $height);
 	}
 
-	public function verifyFile($file, $mimeTypes, $extTypes = null, $maxSize = -1, $genRandFileName = true){
+	public static function verifyFile($file, $mimeTypes, $extTypes = null, $maxSize = -1, $genRandFileName = true){
 		return \CMF\Base\Library\FileHelper::verifyAll($file, $mimeTypes, $extTypes, $maxSize, $genRandFileName);
 	}
 
@@ -62,7 +62,7 @@ class CMF {
 	}
 
 
-	public function getMethods($objOrClass, $dump = true) {
+	public static function getMethods($objOrClass, $dump = true) {
 		if ($dump) {
 			self :: dump(get_class_methods($objOrClass));
 			return;
@@ -71,7 +71,7 @@ class CMF {
 	}
 
 
-	public function getNamespaces($rootNamespace = '', $dump = true) {
+	public static function getNamespaces($rootNamespace = '', $dump = true) {
 		if (!$rootNamespace)$rootNamespace = 'Phalcon|CMF';
 		$namespaces = preg_grep('/^(' . $rootNamespace . ')/', get_declared_classes());
 		if ($dump) {
@@ -82,7 +82,7 @@ class CMF {
 	}
 
 
-	public function elapsedTime() {
+	public static function elapsedTime() {
 		return microtime(true) - self :: $startTime;
 	}
 
@@ -91,7 +91,7 @@ class CMF {
 	 *
 	 * @return number
 	 */
-	function pageno() {
+	public static function pageno() {
 		$page = isset($_REQUEST['page'])?intval($_REQUEST['page']):0;
 		if ($page < 1)$page = 1;
 		return $page;
@@ -104,7 +104,7 @@ class CMF {
 	 * @param number $number 每页数据量
 	 * @return number
 	 */
-	function poffset($page, $number = 20, $retArr = true) {
+	public static function poffset($page, $number = 20, $retArr = true) {
 		$offset = ($page-1) * $number;
 		if (!$retArr)return $offset;
 		return array('number' => $number, 'offset' => $offset);

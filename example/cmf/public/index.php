@@ -1,7 +1,7 @@
 <?php
 include(__DIR__.'/common.inc.php');
 use Phalcon\Mvc\Application;
-use Phalcon\Config\Adapter\Ini as ConfigIni;
+use Phalcon\Config\Adapter\Ini as ConfigIni;CMF::dump($_GET);
 // $_GET['_url'] = '/contact/send';
 // $_SERVER['REQUEST_METHOD'] = 'POST';
 try {

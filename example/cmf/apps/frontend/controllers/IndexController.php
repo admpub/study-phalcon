@@ -4,12 +4,13 @@ use \CMF\Base\Models\MemberAccount;
 /**
 * description
 *
-* @author:S.W.H
-* @E-mail:swh@admpub.com
-* @update:2015/6/10
+* @RoutePrefix("/index")
 */
-
 class IndexController extends ControllerFrontend{
+
+	/**
+	 * @Route("/index")
+	 */
 	public function indexAction(){
 		#$this->showRunnerInfo();
 		$this->response->setContentType('text/html','utf-8')->sendHeaders();
@@ -36,6 +37,9 @@ class IndexController extends ControllerFrontend{
 		echo '<h1>hello.</h1>';
 	}
 
+	/**
+	 * @Route("/i18n")
+	 */
 	public function i18nAction(){
 		$this->response->setContentType('text/html','utf-8')->sendHeaders();
 		\CMF::getClassInfo('Locale');
