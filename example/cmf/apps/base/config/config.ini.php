@@ -9,9 +9,9 @@ prefix   = cge_
 charset  = utf8
 
 [module]
-base            = "Index:/errors;"
+base            = "Index:/base;"
 backend         = "Index:/admin;"
-frontend        = "Index:/index;"
+frontend        = "Index:/;"
 
 [system]
 ;支持非伪静态网址

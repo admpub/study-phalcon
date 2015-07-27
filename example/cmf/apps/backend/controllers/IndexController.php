@@ -7,9 +7,20 @@ namespace CMF\Backend\Controllers;
 * @E-mail:swh@admpub.com
 * @update:2015/6/10
 */
-
+/**
+ * @RoutePrefix("/admin")
+ */
 class IndexController extends ControllerBackend{
+
+	/**
+	 * Route("/index")
+	 */
 	public function indexAction(){
-		echo '<h1>hello.</h1>';exit;
+		echo '<h1>hello backend.</h1>';exit;
+	}
+
+
+	public function aAction(){
+		echo '<h1>hello backend@a.</h1>';exit;
 	}
 }

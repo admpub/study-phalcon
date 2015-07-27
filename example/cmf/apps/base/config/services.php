@@ -27,19 +27,17 @@ if (CMF :: $config->module) {
 	foreach (CMF :: $config->module as $k => $v) {
 		if (!$v) continue;
 		$namespaces['CMF\\'.ucfirst($k).'\Controllers']=APPS_PATH .$k. '/controllers/';
-		if(is_string($v)){
-			$routes=explode(';',trim($v));
-			if($routes){
-				foreach($routes as $r){
-					$r=trim($r);
-					if(!$r)continue;
-					$tmp=explode(':',$r);
-					$controller=trim($tmp[0]);
-					$route=isset($tmp[1])&&!empty($tmp[1])?trim($tmp[1]):'/'.strtolower($controller);
-					if($controller&&$route)$annotationRoutes[$k][$controller]=$route;
-					unset($tmp,$controller,$route);
-				}
-			}
+		if(!is_string($v))continue;
+		$routes=explode(';',trim($v));
+		if(!$routes)continue;
+		foreach($routes as $r){
+			$r=trim($r);
+			if(!$r)continue;
+			$tmp=explode(':',$r);
+			$controller=trim($tmp[0]);
+			$route=isset($tmp[1])&&!empty($tmp[1])?trim($tmp[1]):'/'.strtolower($controller);
+			if($controller&&$route)$annotationRoutes[$k][$controller]=$route;
+			unset($tmp,$controller,$route);
 		}
 	}
 }

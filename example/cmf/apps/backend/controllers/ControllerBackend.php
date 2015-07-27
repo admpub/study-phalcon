@@ -9,7 +9,6 @@ use CMF\Base\Controllers\ControllerBase;
 * @E-mail:swh@admpub.com
 * @update:2015/6/10
 */
-
 class ControllerBackend extends ControllerBase{
 
 }

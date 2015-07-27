@@ -17,17 +17,13 @@ class ControllerBase extends Controller{
         //$this->view->setTemplateAfter('main');
     }
 
-    protected function forward($uri)
+    protected function forward($uri,$module=null)
     {
         $uriParts = explode('/', $uri);
         $params = array_slice($uriParts, 2);
-    	return $this->dispatcher->forward(
-    		array(
-    			'controller' => $uriParts[0],
-    			'action' => $uriParts[1],
-                'params' => $params
-    		)
-    	);
+		$data = array('controller' => $uriParts[0],'action' => $uriParts[1],'params' => $params);
+		if($module) $data['namespace'] = 'CMF\\'.ucfirst($module).'\Controllers';
+    	return $this->dispatcher->forward($data);
     }
 	public function loadModuleScript($module){
 		if(!class_exists('\CMF\\'.ucfirst($module).'\Module') && file_exists(APPS_PATH . $module . '/Module.php')){

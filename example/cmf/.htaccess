@@ -1,5 +1,5 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine Off
+    RewriteEngine On
     RewriteRule ^$ public/     [L]
     RewriteRule (.*) public/$1 [L]
 </IfModule>

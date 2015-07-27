@@ -4,7 +4,12 @@ use \CMF\Base\Models\MemberAccount;
 /**
 * description
 *
-* @RoutePrefix("/index")
+* @author:S.W.H
+* @E-mail:swh@admpub.com
+* @update:2015/6/10
+*/
+/**
+* @RoutePrefix("/")
 */
 class IndexController extends ControllerFrontend{
 
@@ -12,6 +17,7 @@ class IndexController extends ControllerFrontend{
 	 * @Route("/index")
 	 */
 	public function indexAction(){
+		#\CMF::dump($this->dispatcher);
 		#$this->showRunnerInfo();
 		$this->response->setContentType('text/html','utf-8')->sendHeaders();
 		\CMF::getClassInfo($this);
@@ -48,5 +54,11 @@ class IndexController extends ControllerFrontend{
 		echo $locale,'<br/>';
 		$formatter = new \MessageFormatter($locale, '€ {0, number, integer}');
 		echo $formatter->format(array(4560.5)),'<br/>';
+	}
+
+	public function adminAction(){
+		$this->loadModuleScript('backend');
+		$this->view->setViewsDir(\CMF\Backend\Module::getModulePath().'views/');
+		$this->forward('/index/index','backend');
 	}
 }
