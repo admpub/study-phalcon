@@ -1,0 +1,12 @@
+{
+  "name": "parsleyjs",
+  "version": "1.2.2",
+  "ignore": [
+      "bin",
+      "tests",
+      "bower.json"
+    ],
+  "dependencies": {
+      "jquery": ">1.10.0"
+    }
+}
