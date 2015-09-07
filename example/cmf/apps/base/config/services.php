@@ -13,7 +13,7 @@ use Phalcon\Events\Manager as EventsManager;
 use Phalcon\Db\Profiler as ProfilerDb;
 
 CMF :: $view = new View();
-CMF :: $view -> registerEngines(array('.volt' => 'volt'));
+CMF :: $view -> registerEngines(array('.html' => 'volt'));
 
 CMF :: $loader = new Loader();
 $namespaces=array(

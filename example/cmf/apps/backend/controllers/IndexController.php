@@ -20,7 +20,7 @@ class IndexController extends ControllerBackend{
 	}
 
 
-	public function aAction(){
+	public function loginAction(){
 		echo '<h1>hello backend@a.</h1>';exit;
 	}
 }
