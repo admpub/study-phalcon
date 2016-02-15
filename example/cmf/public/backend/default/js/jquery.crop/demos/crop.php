@@ -1,5 +1,5 @@
 <?php
-
+exit('disabled');
 /**
  * Jcrop image cropping plugin for jQuery
  * Example cropping script
